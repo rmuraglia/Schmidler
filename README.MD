@@ -1,0 +1,3 @@
+``Schimdler'' repository contains codebase for various projects undertaken while working in the research group of Scott Schmidler at Duke University.
+
+Q-learning directory contains R code for carrying out Q-learning in the context of determining a minimium variance path for estimation of ratios of normalizing constants by sequential sampling methods when the available parameter space allows for various possible sequences of bridging distributions.
