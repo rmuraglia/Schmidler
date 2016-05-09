@@ -45,6 +45,10 @@ mu1<-5
 sig0<-1
 sig1<-1
 
+nummetrostep<-25
+metro_spread<-c(0.5)
+numbootstrap<-50
+
 # set file ID
 
 
