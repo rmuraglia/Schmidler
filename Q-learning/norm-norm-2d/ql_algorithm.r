@@ -83,10 +83,10 @@ ql_episode<-function(q_map, r_map, epsilon) {
         q_entry<-as.numeric(q_map[[curr_index]][next_index, 2])
         r_entry<-mean(r_map[[curr_index]][[next_index]][,1] , na.rm=TRUE)
         q_prime_ind<-which(indexer==indexer_next)
-        # q_prime_val<-min(as.numeric(q_map[[q_prime_ind]][,2]))
-        # q_map[[curr_index]][next_index, 2]<-q_score(q_entry, r_entry, q_prime_val)
-        q_prime_val<-max(as.numeric(q_map[[q_prime_ind]][,2]))
-        q_map[[curr_index]][next_index, 2]<-q_score(q_entry, -r_entry, q_prime_val)
+        q_prime_val<-min(as.numeric(q_map[[q_prime_ind]][,2]))
+        q_map[[curr_index]][next_index, 2]<-q_score(q_entry, r_entry, q_prime_val)
+        # q_prime_val<-max(as.numeric(q_map[[q_prime_ind]][,2]))
+        # q_map[[curr_index]][next_index, 2]<-q_score(q_entry, -r_entry, q_prime_val)
 
     }
     return(list(q_map, r_map))

@@ -15,7 +15,7 @@ print(date())
 # set working directory
 switch(Sys.info()[['sysname']],
     Windows = {setwd('D:/work-duke/Schmidler/Q-learning/norm-norm-2d')},
-    Darwin = {setwd('/Users/rmuraglia/Dropbox/pathsearch-exhaustive/uni-bi-symmetric/')},
+    Darwin = {setwd('/Users/rmuraglia/GitHub/Schmidler/Q-learning/norm-norm-2d/')},
     Linux = {setwd('/dscrhome/rm204/Q-learning/')}
 )
 

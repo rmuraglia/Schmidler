@@ -147,7 +147,7 @@ for (i in 1:length(point_list)) {
     # each entry is a matrix denoting the legal actions/next states and the Q value associated with that action
     q_mat<-array(NA, dim=c(length(adj_list[[i]]), 2))
     q_mat[,1]<-adj_list[[i]]
-    q_mat[,2]<-0 # arbitrary large value to bias path towards explored edges towards end of algorithm (decision reversed, see below)
+    q_mat[,2]<-1 # arbitrary large value to bias path towards explored edges towards end of algorithm (decision reversed, see below)
     q_map[[i]]<-q_mat
 }
 
