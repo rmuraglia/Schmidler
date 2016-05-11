@@ -122,6 +122,15 @@ for (i in 1:length(point_list)) {
     neighbors<-t(apply(valid_moves, 1, move_result, point_list[[i]]))
 
     # if first entry of point list is lambdamax, then only allow neighbors that are above/below such that it goes towards the target
+    if (point_list[[i]][1]==lambda_max) {
+        rm_ind<-vector()
+        if (point_list[[i]][2]>state_target[2]) {
+            rm_ind<-which(neighbors[,2]>point_list[[i]][2])
+        } else if (point_list[[i]][2]<state_target[2]) {
+            rm_ind<-which(neighbors[,2]<point_list[[i]][2])
+        }
+        if (length(rm_ind)!=0) { neighbors<-neighbors[-rm_ind, , drop=FALSE] }
+    }
     adj_list[[i]]<-apply(neighbors, 1, paste, collapse='_')
 }
 
@@ -138,7 +147,7 @@ for (i in 1:length(point_list)) {
     # each entry is a matrix denoting the legal actions/next states and the Q value associated with that action
     q_mat<-array(NA, dim=c(length(adj_list[[i]]), 2))
     q_mat[,1]<-adj_list[[i]]
-    q_mat[,2]<-100 # arbitrary large value to bias path towards explored edges towards end of algorithm
+    q_mat[,2]<-0 # arbitrary large value to bias path towards explored edges towards end of algorithm (decision reversed, see below)
     q_map[[i]]<-q_mat
 }
 

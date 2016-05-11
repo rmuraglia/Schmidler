@@ -3,8 +3,22 @@
 # to be called by ql_master.r
 # define Q-learning algorithm. adapted to minimize cost instead of maximize reward
 
-ql_search<-function() {
+ql_search<-function(q_map, r_map, alpha, gamma, epsilon_init, epsilon_tau) {
 
+    # carry out a preset number of search episodes
+    delta_epsilon<-1/epsilon_tau
+    maps<-list(q_map, r_map)
+
+    for (i in 1:epsilon_tau) {
+        print(i)
+        maps<-ql_episode(maps[[1]], maps[[2]], epsilon_init-(i-1)*delta_epsilon)
+    }
+    for (i in (epsilon_tau+1):num_episode) {
+        print(i)
+        maps<-ql_episode(maps[[1]], maps[[2]], 1)
+    }
+
+    return(maps)
 }
 
 ## ql_episode subroutine represents a single episode of learning
@@ -66,6 +80,13 @@ ql_episode<-function(q_map, r_map, epsilon) {
         r_map[[curr_index]][[next_index]]<-rbind(r_map[[curr_index]][[next_index]], reward_entry)
 
         # update q_map
+        q_entry<-as.numeric(q_map[[curr_index]][next_index, 2])
+        r_entry<-mean(r_map[[curr_index]][[next_index]][,1] , na.rm=TRUE)
+        q_prime_ind<-which(indexer==indexer_next)
+        # q_prime_val<-min(as.numeric(q_map[[q_prime_ind]][,2]))
+        # q_map[[curr_index]][next_index, 2]<-q_score(q_entry, r_entry, q_prime_val)
+        q_prime_val<-max(as.numeric(q_map[[q_prime_ind]][,2]))
+        q_map[[curr_index]][next_index, 2]<-q_score(q_entry, -r_entry, q_prime_val)
 
     }
     return(list(q_map, r_map))
@@ -80,3 +101,13 @@ q_choice<-function(map, e) {
         return(map[which.min(map[,2]),1])
     } else { return(map[sample(1:nrow(map),1),1]) }
 }
+
+q_score<-function(q, r, q_prime) {
+    new_qsc<-q + alpha*(r + gamma*q_prime - q)
+    return(new_qsc)
+}
+
+# testing vars
+# epsilon<-0
+# alpha<-0.8
+# gamma<-0.8

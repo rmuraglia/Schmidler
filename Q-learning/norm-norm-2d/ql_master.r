@@ -29,6 +29,7 @@ if (length(args)==7) { # if appropriate number, use
     temp_max<-as.numeric(args[5])
     temp_dof<-as.numeric(args[6])
     num_traj<-as.numeric(args[7])
+    num_episode<-200
 } else { # else use following defaults
     move_jump<-1
     temp_numpoints<-5
@@ -37,6 +38,7 @@ if (length(args)==7) { # if appropriate number, use
     temp_max<-4
     temp_dof<-TRUE
     num_traj<-500
+    num_episode<-200
 }
 
 # end point distribution params
@@ -45,11 +47,27 @@ mu1<-5
 sig0<-1
 sig1<-1
 
+# params for sequential sampling and bootstrap variance estimation
 nummetrostep<-25
 metro_spread<-c(0.5)
 numbootstrap<-50
 
-# set file ID
-
+# params for QL search
+alpha<-0.8
+gamma<-0.8
+epsilon_init<-0
+epsilon_tau<-150 # determines episilon rate of change - end searching on epsilon_tau'th search episode
 
 # set up grid
+source('ql_grid_setup.r')
+
+# load QL algorithms
+source('ql_algorithm.r')
+
+# num_traj<-200
+# num_episode<-50
+# epsilon_tau<-30
+
+tim<-ql_search(q_map, r_map, alpha, gamma, epsilon_init, epsilon_tau)
+
+
