@@ -151,6 +151,8 @@ for (i in 1:length(point_list)) {
     q_map[[i]]<-q_mat
 }
 
+q_map[[which(names(q_map)==indexer_target)]][,2]<-0
+
 # consider initializing q to 0. 
 # need special handling for maps at target states - no moves are allowed, and the q score for adjacent states should just be the discounted reward
 
