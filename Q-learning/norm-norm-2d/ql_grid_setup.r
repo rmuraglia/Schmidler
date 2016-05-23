@@ -229,3 +229,12 @@ boot_var_ratio<-function(norm_weights, incr_weights) {
     boot_incr<-incr_weights[boot_index]
     boot_ratio<-calc_norm_ratio(boot_norm, boot_incr)
 }
+
+
+###################
+# user defined reward map
+###################
+
+# manually create a reward map lookup, so we can construct an example with known paths.
+# each reward is normally distributed with varying centers and scales
+# each traversal of an edge will draw a random reward from the corresponding distribution.
