@@ -38,7 +38,8 @@ if (length(args)==7) { # if appropriate number, use
     temp_max<-4
     temp_dof<-TRUE
     num_traj<-500
-    num_episode<-600
+    # num_episode<-600
+    num_episode<-200
 }
 
 # end point distribution params
@@ -54,9 +55,10 @@ numbootstrap<-50
 
 # params for QL search
 alpha<-0.8
-gamma<-0.8
+gamma<-1
 epsilon_init<-0
-epsilon_tau<-450 # determines episilon rate of change - end searching on epsilon_tau'th search episode
+epsilon_tau<-170
+# epsilon_tau<-450 # determines episilon rate of change - end searching on epsilon_tau'th search episode
 
 # set up grid
 source('ql_grid_setup.r')

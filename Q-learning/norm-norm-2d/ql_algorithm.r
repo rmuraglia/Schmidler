@@ -11,7 +11,7 @@ ql_search<-function(q_map, r_map, alpha, gamma, epsilon_init, epsilon_tau) {
 
     for (i in 1:epsilon_tau) {
         print(i)
-        maps<-ql_episode(maps[[1]], maps[[2]], epsilon_init-(i-1)*delta_epsilon)
+        maps<-ql_episode(maps[[1]], maps[[2]], epsilon_init+(i-1)*delta_epsilon)
     }
     for (i in (epsilon_tau+1):num_episode) {
         print(i)
