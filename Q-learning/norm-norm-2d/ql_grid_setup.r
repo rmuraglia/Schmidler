@@ -1,4 +1,5 @@
 # ql_grid_setup.r
+# maze grid version - doesn't need all the SIS and distribution portions
 
 # set up grid for Q-learning search in lambda-T parameter space
 # to be called by ql_master.r - has depends on params defined in that file
@@ -32,30 +33,6 @@ state_init<-c(lambda_points[1], temp_points[temp_target])
 state_target<-c(lambda_points[lambda_numpoints], temp_points[temp_target])
 indexer_init<-paste(state_init, collapse='_')
 indexer_target<-paste(state_target, collapse='_')
-
-################
-# define intermediate distributions
-################
-
-# mu update rule for normals:
-mu_update<-function(lambda, T) {
-    mu_new<-(sig1^2*mu0*(1-lambda) + sig0^2*mu1*lambda) / (sig1^2*(1-lambda) + sig0^2*lambda)
-    return(mu_new)
-}
-
-# sigma update rule for normals:
-sig_update<-function(lambda, T) {
-    sig_new<-sqrt( T*(sig0^2*sig1^2) / (sig1^2*(1-lambda) + sig0^2*lambda) )
-    return(sig_new)
-}
-
-# make a function that will take lambda, T and a draw to generate an unnormalized density
-unnorm_dens<-function(x, lambda, T) {
-    mu_new<-mu_update(lambda, T)
-    sigma_new<-sig_update(lambda, T)
-    q_dens<-exp(-(x-mu_new)^2/(2*sigma_new^2))
-    return(q_dens)
-}
 
 ##############
 # movement options
@@ -147,7 +124,7 @@ for (i in 1:length(point_list)) {
     # each entry is a matrix denoting the legal actions/next states and the Q value associated with that action
     q_mat<-array(NA, dim=c(length(adj_list[[i]]), 2))
     q_mat[,1]<-adj_list[[i]]
-    q_mat[,2]<-1 # arbitrary large value to bias path towards explored edges towards end of algorithm (decision reversed, see below)
+    q_mat[,2]<-100 # arbitrary large value to bias path towards explored edges towards end of algorithm (decision reversed, see below)
     q_map[[i]]<-q_mat
 }
 
@@ -170,67 +147,6 @@ for (i in 1:length(point_list)) {
     r_map[[i]]<-r_list
 }
 
-get_valid_moves<-function(state, path) {
-
-    # get all adjacent states
-    curr_ind<-which(indexer==state)
-    full_neighbors<-adj_list[[curr_ind]]
-
-    # remove states that are present in the path to date
-    trim_neighbors<-setdiff(full_neighbors, path)
-
-    return(trim_neighbors)
-}
-
-#############
-# sampling helpers
-#############
-
-sis_transition<-function(draw, distr_indexer) {
-    A<-draw
-    for (i in 1:nummetrostep) {
-        for (j in 1:length(metro_spread)) {
-            B<-metro_func(A, distr_indexer, metro_spread[j])
-            A<-B
-        }
-    }
-    return(B)
-}
-
-metro_func<-function(draw, distr_indexer, spread) {
-    trial_draw<-rnorm(1, mean=draw, sd=spread)
-    distr_state<-as.numeric(unlist(strsplit(distr_indexer, split='_')))
-    curr_dens<-unnorm_dens(draw, distr_state[1], distr_state[2])
-    trial_dens<-unnorm_dens(trial_draw, distr_state[1], distr_state[2])
-    accept_prob<-min(1, trial_dens/curr_dens)
-    prob_draw<-runif(n=1, min=0, max=1)
-    if (prob_draw<=accept_prob) { return(trial_draw) 
-    } else { return(draw) }
-}
-
-get_incr_weight<-function(draw, indexer_prev, indexer_curr) {
-    distr_prev<-as.numeric(unlist(strsplit(indexer_prev, split='_')))
-    distr_curr<-as.numeric(unlist(strsplit(indexer_curr, split='_')))
-    curr_dens<-unnorm_dens(draw, distr_curr[1], distr_curr[2])
-    prev_dens<-unnorm_dens(draw, distr_prev[1], distr_prev[2])
-    incr_weights<-curr_dens/prev_dens
-    return(incr_weights)
-}
-
-calc_norm_ratio<-function(norm_weights, incr_weights) {
-    return(sum(norm_weights*incr_weights))
-}
-
-boot_var_ratio<-function(norm_weights, incr_weights) {
-
-    # sample with replacement to get new set
-    boot_index<-sample(1:length(norm_weights), size=length(norm_weights), replace=T)
-    boot_norm<-norm_weights[boot_index]/sum(norm_weights[boot_index])
-    boot_incr<-incr_weights[boot_index]
-    boot_ratio<-calc_norm_ratio(boot_norm, boot_incr)
-}
-
-
 ###################
 # user defined reward map
 ###################
@@ -238,3 +154,228 @@ boot_var_ratio<-function(norm_weights, incr_weights) {
 # manually create a reward map lookup, so we can construct an example with known paths.
 # each reward is normally distributed with varying centers and scales
 # each traversal of an edge will draw a random reward from the corresponding distribution.
+
+r_distns<-vector('list', length(indexer))
+names(r_distns)<-indexer
+
+# for each state, create an entry to the list, detailing cost and variance (noise) for each exiting edge
+# 0, 0.5
+k<-1
+r_d_temp<-array(NA, dim=dim(q_map[[k]]))
+r_d_temp[1,]<-c(10,1)
+r_d_temp[2,]<-c(1,1)
+r_distns[[k]]<-r_d_temp
+
+# 0.2, 0.5
+k<-2
+r_d_temp<-array(NA, dim=dim(q_map[[k]]))
+r_d_temp[1,]<-c(10,1)
+r_d_temp[2,]<-c(2.5,1)
+r_distns[[k]]<-r_d_temp
+
+# 0.4, 0.5
+k<-3
+r_d_temp<-array(NA, dim=dim(q_map[[k]]))
+r_d_temp[1,]<-c(10,1)
+r_d_temp[2,]<-c(1,1)
+r_distns[[k]]<-r_d_temp
+
+# 0.6, 0.5
+k<-4
+r_d_temp<-array(NA, dim=dim(q_map[[k]]))
+r_d_temp[1,]<-c(50,1)
+r_d_temp[2,]<-c(1,1)
+r_distns[[k]]<-r_d_temp
+
+# 0.8, 0.5
+k<-5
+r_d_temp<-array(NA, dim=dim(q_map[[k]]))
+r_d_temp[1,]<-c(10,1)
+r_d_temp[2,]<-c(2.5,1)
+r_distns[[k]]<-r_d_temp
+
+# 1, 0.5
+k<-6
+r_d_temp<-array(NA, dim=dim(q_map[[k]]))
+r_d_temp[1,]<-c(1,1)
+r_distns[[k]]<-r_d_temp
+
+# 0, 1.375
+k<-7
+r_d_temp<-array(NA, dim=dim(q_map[[k]]))
+r_d_temp[1,]<-c(1,1)
+r_d_temp[2,]<-c(10,1)
+r_d_temp[3,]<-c(1,1)
+r_distns[[k]]<-r_d_temp
+
+# 0.2, 1.375
+k<-8
+r_d_temp<-array(NA, dim=dim(q_map[[k]]))
+r_d_temp[1,]<-c(2.5,1)
+r_d_temp[2,]<-c(10,1)
+r_d_temp[3,]<-c(2.5,1)
+r_distns[[k]]<-r_d_temp
+
+# 0.4, 1.375
+k<-9
+r_d_temp<-array(NA, dim=dim(q_map[[k]]))
+r_d_temp[1,]<-c(1,1)
+r_d_temp[2,]<-c(1,1)
+r_d_temp[3,]<-c(1,1)
+r_distns[[k]]<-r_d_temp
+
+# 0.6, 1.375
+k<-10
+r_d_temp<-array(NA, dim=dim(q_map[[k]]))
+r_d_temp[1,]<-c(1,1)
+r_d_temp[2,]<-c(50,1)
+r_d_temp[3,]<-c(1,1)
+r_distns[[k]]<-r_d_temp
+
+# 0.8, 1.375
+k<-11
+r_d_temp<-array(NA, dim=dim(q_map[[k]]))
+r_d_temp[1,]<-c(2.5,1)
+r_d_temp[2,]<-c(10,1)
+r_d_temp[3,]<-c(2.5,1)
+r_distns[[k]]<-r_d_temp
+
+# 1, 1.375
+k<-12
+r_d_temp<-array(NA, dim=dim(q_map[[k]]))
+r_d_temp[1,]<-c(1,1)
+r_d_temp[2,]<-c(1,1)
+r_distns[[k]]<-r_d_temp
+
+# 0, 2.25
+k<-13
+r_d_temp<-array(NA, dim=dim(q_map[[k]]))
+r_d_temp[1,]<-c(1,1)
+r_d_temp[2,]<-c(10,1)
+r_d_temp[3,]<-c(1,1)
+r_distns[[k]]<-r_d_temp
+
+# 0.2, 2.25
+k<-14
+r_d_temp<-array(NA, dim=dim(q_map[[k]]))
+r_d_temp[1,]<-c(2.5,1)
+r_d_temp[2,]<-c(10,1)
+r_d_temp[3,]<-c(2.5,1)
+r_distns[[k]]<-r_d_temp
+
+# 0.4, 2.25
+k<-15
+r_d_temp<-array(NA, dim=dim(q_map[[k]]))
+r_d_temp[1,]<-c(1,1)
+r_d_temp[2,]<-c(50,1)
+r_d_temp[3,]<-c(1,1)
+r_distns[[k]]<-r_d_temp
+
+# 0.6, 2.25
+k<-16
+r_d_temp<-array(NA, dim=dim(q_map[[k]]))
+r_d_temp[1,]<-c(1,1)
+r_d_temp[2,]<-c(50,1)
+r_d_temp[3,]<-c(1,1)
+r_distns[[k]]<-r_d_temp
+
+# 0.8, 2.25
+k<-17
+r_d_temp<-array(NA, dim=dim(q_map[[k]]))
+r_d_temp[1,]<-c(2.5,1)
+r_d_temp[2,]<-c(10,1)
+r_d_temp[3,]<-c(2.5,1)
+r_distns[[k]]<-r_d_temp
+
+# 1, 2.25
+k<-18
+r_d_temp<-array(NA, dim=dim(q_map[[k]]))
+r_d_temp[1,]<-c(1,1)
+r_distns[[k]]<-r_d_temp
+
+# 0, 3.125
+k<-19
+r_d_temp<-array(NA, dim=dim(q_map[[k]]))
+r_d_temp[1,]<-c(1,1)
+r_d_temp[2,]<-c(10,1)
+r_d_temp[3,]<-c(1,1)
+r_distns[[k]]<-r_d_temp
+
+# 0.2, 3.125
+k<-20
+r_d_temp<-array(NA, dim=dim(q_map[[k]]))
+r_d_temp[1,]<-c(2.5,1)
+r_d_temp[2,]<-c(10,1)
+r_d_temp[3,]<-c(2.5,1)
+r_distns[[k]]<-r_d_temp
+
+# 0.4, 3.125
+k<-21
+r_d_temp<-array(NA, dim=dim(q_map[[k]]))
+r_d_temp[1,]<-c(1,1)
+r_d_temp[2,]<-c(50,1)
+r_d_temp[3,]<-c(1,1)
+r_distns[[k]]<-r_d_temp
+
+# 0.6, 3.125
+k<-22
+r_d_temp<-array(NA, dim=dim(q_map[[k]]))
+r_d_temp[1,]<-c(1,1)
+r_d_temp[2,]<-c(1,1)
+r_d_temp[3,]<-c(1,1)
+r_distns[[k]]<-r_d_temp
+
+# 0.8, 3.125
+k<-23
+r_d_temp<-array(NA, dim=dim(q_map[[k]]))
+r_d_temp[1,]<-c(2.5,1)
+r_d_temp[2,]<-c(10,1)
+r_d_temp[3,]<-c(2.5,1)
+r_distns[[k]]<-r_d_temp
+
+# 1, 3.125
+k<-24
+r_d_temp<-array(NA, dim=dim(q_map[[k]]))
+r_d_temp[1,]<-c(1,1)
+r_distns[[k]]<-r_d_temp
+
+# 0, 4
+k<-25
+r_d_temp<-array(NA, dim=dim(q_map[[k]]))
+r_d_temp[1,]<-c(1,1)
+r_d_temp[2,]<-c(10,1)
+r_distns[[k]]<-r_d_temp
+
+# 0.2, 4
+k<-26
+r_d_temp<-array(NA, dim=dim(q_map[[k]]))
+r_d_temp[1,]<-c(2.5,1)
+r_d_temp[2,]<-c(10,1)
+r_distns[[k]]<-r_d_temp
+
+# 0.4, 4
+k<-27
+r_d_temp<-array(NA, dim=dim(q_map[[k]]))
+r_d_temp[1,]<-c(1,1)
+r_d_temp[2,]<-c(50,1)
+r_distns[[k]]<-r_d_temp
+
+# 0.6, 4
+k<-28
+r_d_temp<-array(NA, dim=dim(q_map[[k]]))
+r_d_temp[1,]<-c(1,1)
+r_d_temp[2,]<-c(50,1)
+r_distns[[k]]<-r_d_temp
+
+# 0.8, 4
+k<-29
+r_d_temp<-array(NA, dim=dim(q_map[[k]]))
+r_d_temp[1,]<-c(2.5,1)
+r_d_temp[2,]<-c(10,1)
+r_distns[[k]]<-r_d_temp
+
+# 1, 4
+k<-30
+r_d_temp<-array(NA, dim=dim(q_map[[k]]))
+r_d_temp[1,]<-c(1,1)
+r_distns[[k]]<-r_d_temp

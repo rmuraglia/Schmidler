@@ -34,10 +34,6 @@ ql_episode<-function(q_map, r_map, epsilon) {
     # at end, reprocess agent draws to determine var of each edge
     # report vars as rewards and update q map
     agent_path<-vector()
-    agent_draws<-array(NA, dim=c(num_traj, 1))
-    agent_draws[,1]<-rnorm(num_traj, mean=mu0, sd=sig0)
-    agent_incr_weights<-array(NA, dim=c(num_traj, 1))
-    agent_norm_weights<-array(1/num_traj, dim=c(num_traj, 1))
 
     agent_path[1]<-indexer_init
     iter_dummy<-0
@@ -63,18 +59,8 @@ ql_episode<-function(q_map, r_map, epsilon) {
         # add choice to path
         agent_path[iter_dummy+1]<-indexer_next
 
-        # propagate particles
-        new_draws<-sapply(agent_draws[,iter_dummy],sis_transition, indexer_next)
-        agent_draws<-cbind(agent_draws, new_draws)
-
-        # calculate weights for ratio estimation
-        agent_incr_weights<-cbind(agent_incr_weights, get_incr_weight(agent_draws[,iter_dummy], agent_path[iter_dummy], agent_path[iter_dummy+1]))
-        agent_norm_weights<-cbind(agent_norm_weights, (agent_norm_weights[,iter_dummy]*agent_incr_weights[,iter_dummy+1])/sum(agent_norm_weights[,iter_dummy]*agent_incr_weights[,iter_dummy+1]))
-
-        # bootstrap to get variance of ratio estimation
-        estim_vec<-replicate(numbootstrap, boot_var_ratio(agent_norm_weights[,iter_dummy], agent_incr_weights[,iter_dummy+1]))
-        action_reward<-var(log(estim_vec))
-        reward_entry<-c(action_reward, 1) # for SIS case, start with uninformative 1 variance of variance - all estimates of reward are considered equally important
+        # draw new edge reward from distribution
+        reward_entry<-c(rnorm(1, r_distns[[curr_index]][next_index,1], r_distns[[curr_index]][next_index,2]),1)
 
         # update r_map
         r_map[[curr_index]][[next_index]]<-rbind(r_map[[curr_index]][[next_index]], reward_entry)
@@ -85,9 +71,6 @@ ql_episode<-function(q_map, r_map, epsilon) {
         q_prime_ind<-which(indexer==indexer_next)
         q_prime_val<-min(as.numeric(q_map[[q_prime_ind]][,2]))
         q_map[[curr_index]][next_index, 2]<-q_score(q_entry, r_entry, q_prime_val)
-        # q_prime_val<-max(as.numeric(q_map[[q_prime_ind]][,2]))
-        # q_map[[curr_index]][next_index, 2]<-q_score(q_entry, -r_entry, q_prime_val)
-
     }
     return(list(q_map, r_map))
 }
@@ -106,8 +89,3 @@ q_score<-function(q, r, q_prime) {
     new_qsc<-q + alpha*(r + gamma*q_prime - q)
     return(new_qsc)
 }
-
-# testing vars
-# epsilon<-0
-# alpha<-0.8
-# gamma<-0.8

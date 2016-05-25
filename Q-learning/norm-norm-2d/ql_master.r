@@ -28,7 +28,6 @@ if (length(args)==7) { # if appropriate number, use
     temp_min<-as.numeric(args[4])
     temp_max<-as.numeric(args[5])
     temp_dof<-as.numeric(args[6])
-    num_traj<-as.numeric(args[7])
     num_episode<-200
 } else { # else use following defaults
     move_jump<-1
@@ -37,21 +36,9 @@ if (length(args)==7) { # if appropriate number, use
     temp_min<-0.5
     temp_max<-4
     temp_dof<-TRUE
-    num_traj<-500
     # num_episode<-600
     num_episode<-200
 }
-
-# end point distribution params
-mu0<-0
-mu1<-5
-sig0<-1
-sig1<-1
-
-# params for sequential sampling and bootstrap variance estimation
-nummetrostep<-25
-metro_spread<-c(0.5)
-numbootstrap<-50
 
 # params for QL search
 alpha<-0.8
