@@ -3,6 +3,13 @@
 # to be called by ql_master.r
 # define Q-learning algorithm. adapted to minimize cost instead of maximize reward
 
+# add a piece to ql_search that checks for convergence
+# crtieria: steady opt path
+# criteria: steady path cost
+# note: need function to return opt path (handle incomplete ones)
+# note: need to store prev solns for comparison
+# note: need new handling for epsilon - no longer based on a static schedule since we don't know total num of waves
+
 ql_search<-function(q_map, r_map, alpha, gamma, epsilon_init, epsilon_tau) {
 
     # carry out a preset number of search episodes
