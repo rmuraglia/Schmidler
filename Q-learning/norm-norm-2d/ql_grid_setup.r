@@ -259,7 +259,7 @@ r_distns[[k]]<-r_d_temp
 k<-14
 r_d_temp<-array(NA, dim=dim(q_map[[k]]))
 r_d_temp[1,]<-c(2.5,1)
-r_d_temp[2,]<-c(10,1)
+r_d_temp[2,]<-c(1,1)
 r_d_temp[3,]<-c(2.5,1)
 r_distns[[k]]<-r_d_temp
 
