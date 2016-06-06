@@ -28,7 +28,7 @@ if (length(args)==7) { # if appropriate number, use
     temp_min<-as.numeric(args[4])
     temp_max<-as.numeric(args[5])
     temp_dof<-as.numeric(args[6])
-    num_episode<-200
+    min_episode<-as.numeric(args[7])
 } else { # else use following defaults
     move_jump<-1
     temp_numpoints<-5
@@ -36,16 +36,15 @@ if (length(args)==7) { # if appropriate number, use
     temp_min<-0.5
     temp_max<-4
     temp_dof<-TRUE
-    # num_episode<-600
-    num_episode<-200
+    min_episode<-50
 }
 
 # params for QL search
 alpha<-0.8
 gamma<-1
 epsilon_init<-0
-epsilon_tau<-170
-# epsilon_tau<-450 # determines episilon rate of change - end searching on epsilon_tau'th search episode
+epsilon_delta<-0.5/min_episode # at the end of the minimum number of search episodes, set epsilon to 0.5
+conv_tol<-0.0025
 
 # set up grid
 source('ql_grid_setup.r')
@@ -57,6 +56,12 @@ source('ql_algorithm.r')
 # num_episode<-50
 # epsilon_tau<-30
 
-tim<-ql_search(q_map, r_map, alpha, gamma, epsilon_init, epsilon_tau)
+tim<-ql_search(q_map, r_map, alpha, gamma, epsilon_init, min_episode, conv_tol)
 
 
+soln<-ql_path_soln(tim[[1]])
+soln
+ql_path_cost(tim[[2]], soln)
+
+
+ql_path_cost2(tim[[2]], soln)
