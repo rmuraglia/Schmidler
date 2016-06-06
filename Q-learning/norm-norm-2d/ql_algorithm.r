@@ -89,3 +89,38 @@ q_score<-function(q, r, q_prime) {
     new_qsc<-q + alpha*(r + gamma*q_prime - q)
     return(new_qsc)
 }
+
+ql_path_soln<-function(q_map) {
+    path_soln<-list(indexer_init)
+
+    # until final state in path is target state, keep searching unless have break
+    while (path_soln[[length(path_soln)]] != indexer_target) {
+        prev_ind<-which(indexer==path_soln[[length(path_soln)]])
+        prev_q<-q_map[[prev_ind]]
+        next_ind<-which.min(prev_q[,2])
+        next_path<-prev_q[next_ind,1]
+
+        if (next_path %in% path_soln) { # if path contains loop, break and return no path
+            path_soln<-NA
+            break
+        } else {
+            path_soln[[length(path_soln)+1]]<-next_path
+        }
+    }
+    return(path_soln)
+}
+
+# potentially replace with a score-convergence based on the Q map?
+ql_path_cost<-function(r_map, path_soln) {
+    cost<-0
+    if (any(is.na(path_soln))) { cost<-NA 
+    } else {
+        for (i in 1:(length(path_soln)-1)) {
+            prev_ind<-which(indexer==path_soln[[i]])
+            cost_ind<-which(names(r_map[[prev_ind]])==path_soln[i+1])
+            step_cost<-mean(r_map[[prev_ind]][[cost_ind]][,1] , na.rm=TRUE)
+            cost<-cost+step_cost
+        }
+    }   
+    return(cost)
+}
