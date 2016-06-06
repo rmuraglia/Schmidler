@@ -43,7 +43,7 @@ if (length(args)==7) { # if appropriate number, use
 alpha<-0.8
 gamma<-1
 epsilon_init<-0
-epsilon_delta<-0.5/min_episode # at the end of the minimum number of search episodes, set epsilon to 0.5
+epsilon_delta<-0.0/min_episode # at the end of the minimum number of search episodes, set epsilon to 0.5
 conv_tol<-0.0025
 
 # set up grid

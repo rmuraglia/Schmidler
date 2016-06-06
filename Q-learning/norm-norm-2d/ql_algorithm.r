@@ -28,7 +28,7 @@ ql_search<-function(q_map, r_map, alpha, gamma, epsilon_init, min_episode, conv_
     # set convergence flags to false
     path_conv<-FALSE
     cost_conv<-FALSE
-    epsilon_curr<-0.5
+    epsilon_curr<-0
 
     while (!(path_conv & cost_conv)) { # until both are converged, keep going
         ql_iter<-ql_iter+1
@@ -157,13 +157,15 @@ ql_path_cost<-function(r_map, path_soln) {
 }
 
 epsilon_update<-function(epsilon_curr, path_conv, cost_delta) {
+    # note all epsilons cap at 1
+
     if (path_conv) { # if path is converged
         if (cost_delta>0.25) { # but value is really noisy, don't change randomness
             epsilon_new<-epsilon_curr
-        } else { epsilon_new<-epsilon_curr+0.025 } # if value is reasonably stable, reduce randomness
+        } else { epsilon_new<-min(1, epsilon_curr+0.025) } # if value is reasonably stable, reduce randomness
     } else { #if path isn't converged
         if (cost_delta<0.1) { # but the values between competing paths are reasonably close, reduce randomness
-            epsilon_new<-epsilon_curr+0.025
+            epsilon_new<-min(1, epsilon_curr+0.025)
         } else { epsilon_new<-epsilon_curr } 
     }
     return(epsilon_new)
