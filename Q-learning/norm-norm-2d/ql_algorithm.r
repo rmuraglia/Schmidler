@@ -65,7 +65,7 @@ ql_full_history<-function(q_map, r_map, alpha, gamma, epsilon_init, epsilon_tau)
         path_soln_temp<-ql_path_soln(maps[[1]])
         path_cost_temp<-ql_path_cost(maps[[2]], path_soln_temp)
         path_soln_mat<-t(sapply(path_soln_temp, split_func))
-        colnames(path_soln_mat)<-c('lambda', 'temperature')
+        if (!is.na(path_soln_mat)) { colnames(path_soln_mat)<-c('lambda', 'temperature') }
         path_solns[[i]]<-path_soln_mat
         path_costs[i]<-path_cost_temp
     }
