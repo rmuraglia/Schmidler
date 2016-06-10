@@ -52,36 +52,6 @@ ql_search<-function(q_map, r_map, alpha, gamma, epsilon_init, min_episode, conv_
     return(maps)
 }
 
-ql_full_history<-function(q_map, r_map, alpha, gamma, epsilon_init, epsilon_tau) {
-
-    maps<-list(q_map, r_map)
-    delta_epsilon<-1/epsilon_tau
-    path_solns<-vector('list', length=num_episode)
-    path_costs<-rep(NA, length.out=num_episode)
-
-    for (i in 1:epsilon_tau) {
-        print(i)
-        maps<-ql_episode(maps[[1]], maps[[2]], epsilon_init+(i-1)*delta_epsilon)
-        path_soln_temp<-ql_path_soln(maps[[1]])
-        path_cost_temp<-ql_path_cost(maps[[2]], path_soln_temp)
-        path_soln_mat<-t(sapply(path_soln_temp, split_func))
-        colnames(path_soln_mat)<-c('lambda', 'temperature')
-        path_solns[[i]]<-path_soln_mat
-        path_costs[i]<-path_cost_temp
-    }
-    for (i in (epsilon_tau+1):num_episode) {
-        print(i)
-        maps<-ql_episode(maps[[1]], maps[[2]], 1)
-        path_soln_temp<-ql_path_soln(maps[[1]])
-        path_cost_temp<-ql_path_cost(maps[[2]], path_soln_temp)
-        path_soln_mat<-t(sapply(path_soln_temp, split_func))
-        colnames(path_soln_mat)<-c('lambda', 'temperature')
-        path_solns[[i]]<-path_soln_mat
-        path_costs[i]<-path_cost_temp
-    }
-    return(maps)
-}
-
 ## ql_episode subroutine represents a single episode of learning
 # each wave explores a single path using one bundle of samples
 # inputs: 
@@ -214,10 +184,4 @@ ql_path_cost2<-function(r_map, path_soln) {
         }
     }   
     return(cost)
-}
-
-split_func<-function(x) { 
-    if(any(is.na(x))) { out<-NA
-    } else { out<-as.numeric(unlist(strsplit(x, split='_'))) }
-    return(out)
 }
