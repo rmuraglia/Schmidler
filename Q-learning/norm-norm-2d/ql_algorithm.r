@@ -79,7 +79,7 @@ ql_full_history<-function(q_map, r_map, alpha, gamma, epsilon_init, epsilon_tau)
         path_solns[[i]]<-path_soln_mat
         path_costs[i]<-path_cost_temp
     }
-    return(list(path_solns, path_costs))
+    return(maps)
 }
 
 ## ql_episode subroutine represents a single episode of learning
