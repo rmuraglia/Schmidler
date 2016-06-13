@@ -47,7 +47,7 @@ epsilon_delta<-0.0/min_episode # at the end of the minimum number of search epis
 conv_tol<-0.0025
 
 # set up grid
-source('ql_grid_setup.r')
+source('ql_grid02_setup.r')
 
 # load QL algorithms
 source('ql_algorithm.r')
@@ -70,11 +70,11 @@ split_func<-function(x) {
 path_df<-as.data.frame(t(sapply(tim[[1]], split_func)))
 colnames(path_df)<-c('lambda', 'temperature')
 
-p0<-ggplot(data=point_grid, aes(x=lambda, y=temperature)) + geom_point() + geom_path(data=path_df, arrow=arrow()) + labs(title='converged in 30+119 steps')
+p0<-ggplot(data=point_grid, aes(x=lambda, y=temperature)) + geom_point() + geom_path(data=path_df, arrow=arrow()) + labs(title='converged in 30+55 steps')
 
 # p0<-ggplot(data=point_grid, aes(x=lambda, y=temperature)) + geom_point() + geom_path(data=path_df, arrow=arrow()) + labs(title='failed to converge after 400 steps')
 
-ggsave(file='maze-grid01-3chains-10.png', width=6, height=6, dpi=100, plot=p0)
+ggsave(file='maze-grid02-3chains-05.png', width=6, height=6, dpi=100, plot=p0)
 
 # tim<-ql_search(q_map, r_map, alpha, gamma, epsilon_init, min_episode, conv_tol)
 
