@@ -36,7 +36,7 @@ if (length(args)==7) { # if appropriate number, use
     temp_min<-0.5
     temp_max<-4
     temp_dof<-TRUE
-    min_episode<-50
+    min_episode<-30
 }
 
 # params for QL search
@@ -56,12 +56,32 @@ source('ql_algorithm.r')
 # num_episode<-50
 # epsilon_tau<-30
 
-tim<-ql_search(q_map, r_map, alpha, gamma, epsilon_init, min_episode, conv_tol)
+tim<-ql_three_chain(q_map, r_map, alpha, gamma, min_episode, conv_tol)
+
+library(ggplot2)
+library(grid)
+
+split_func<-function(x) { 
+    if(any(is.na(x))) { out<-NA
+    } else { out<-as.numeric(unlist(strsplit(x, split='_'))) }
+    return(out)
+}
+
+path_df<-as.data.frame(t(sapply(tim[[1]], split_func)))
+colnames(path_df)<-c('lambda', 'temperature')
+
+p0<-ggplot(data=point_grid, aes(x=lambda, y=temperature)) + geom_point() + geom_path(data=path_df, arrow=arrow()) + labs(title='converged in 30+119 steps')
+
+# p0<-ggplot(data=point_grid, aes(x=lambda, y=temperature)) + geom_point() + geom_path(data=path_df, arrow=arrow()) + labs(title='failed to converge after 400 steps')
+
+ggsave(file='maze-grid01-3chains-10.png', width=6, height=6, dpi=100, plot=p0)
+
+# tim<-ql_search(q_map, r_map, alpha, gamma, epsilon_init, min_episode, conv_tol)
 
 
-soln<-ql_path_soln(tim[[1]])
-soln
-ql_path_cost(tim[[2]], soln)
+# soln<-ql_path_soln(tim[[1]])
+# soln
+# ql_path_cost(tim[[2]], soln)
 
 
-ql_path_cost2(tim[[2]], soln)
+# ql_path_cost2(tim[[2]], soln)

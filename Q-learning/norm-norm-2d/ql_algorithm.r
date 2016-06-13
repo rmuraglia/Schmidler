@@ -52,6 +52,72 @@ ql_search<-function(q_map, r_map, alpha, gamma, epsilon_init, min_episode, conv_
     return(maps)
 }
 
+ql_three_chain<-function(q_map, r_map, alpha, gamma, min_episode, conv_tol) {
+
+    # initialize three map sets
+    maps1<-list(q_map, r_map)
+    maps2<-maps1
+    maps3<-maps1
+    epsilons<-c(0,0,0)
+
+    # run minimum number of random searches
+    for (ql_iter in 1:min_episode) {
+        print(ql_iter)
+        maps1<-ql_episode(maps1[[1]], maps1[[2]], 0)
+        maps2<-ql_episode(maps2[[1]], maps2[[2]], 0)
+        maps3<-ql_episode(maps3[[1]], maps3[[2]], 0)
+    }
+
+    soln1<-ql_path_soln(maps1[[1]])
+    soln2<-ql_path_soln(maps2[[1]])
+    soln3<-ql_path_soln(maps3[[1]])
+
+    path_match<-c(identical(soln1, soln2), identical(soln1, soln3), identical(soln2, soln3))
+    path_conv<-all(path_match) # check if solution path is consistent between three chains
+
+    #########
+    cost_conv<-TRUE # unsure what to use cost convergence for yet
+    # option 1: cost convergence between chains
+    # option 2: cost convergence within chains
+    # within chain seems trivial in maze grid case - little noise and successive costs are HIGHLY correlated (almost always 'converged')
+    # between chains may be too stringent in noisier cases
+    #######
+
+    epsilons<-c(0.7, 0.7, 0.7)
+
+    while(!(path_conv & cost_conv)) { # until both are converged, keep going
+        ql_iter<-ql_iter+1
+        print(ql_iter)
+
+        # update epsilons
+        epsilons<-epsilon_update_3chain(epsilons, path_match)
+
+        # run next search episode
+        maps1<-ql_episode(maps1[[1]], maps1[[2]], epsilons[1])
+        maps2<-ql_episode(maps2[[1]], maps2[[2]], epsilons[2])
+        maps3<-ql_episode(maps3[[1]], maps3[[2]], epsilons[3])
+
+        # retrieve new paths
+        soln1<-ql_path_soln(maps1[[1]])
+        soln2<-ql_path_soln(maps2[[1]])
+        soln3<-ql_path_soln(maps3[[1]])
+
+        # update convergence criteria
+        path_match<-c(identical(soln1, soln2), identical(soln1, soln3), identical(soln2, soln3))
+        path_conv<-all(path_match)
+        print(path_match)
+
+        if (ql_iter > 400) { break }
+    }
+
+    path_out<-ql_path_soln(maps1[[1]])
+    cost1_out<-ql_path_cost(maps1[[2]], path_out)
+    cost2_out<-ql_path_cost(maps2[[2]], path_out)
+    cost3_out<-ql_path_cost(maps3[[2]], path_out)
+    cost_out<-c(cost1_out, cost2_out, cost3_out)
+    return(list(path_out, cost_out))
+}
+
 ## ql_episode subroutine represents a single episode of learning
 # each wave explores a single path using one bundle of samples
 # inputs: 
@@ -169,6 +235,32 @@ epsilon_update<-function(epsilon_curr, path_conv, cost_delta) {
         } else { epsilon_new<-epsilon_curr } 
     }
     return(epsilon_new)
+}
+
+
+epsilon_update_3chain<-function(epsilons, path_match) {
+    epsilon_delta<-0.005
+    if (path_match[1]) {
+        epsilons[3]<-max(0, epsilons[3]-epsilon_delta)
+        epsilons[1]<-min(1, epsilons[1]+epsilon_delta)
+        epsilons[2]<-min(1, epsilons[2]+epsilon_delta)
+    } else if (path_match[2]) {
+        epsilons[2]<-max(0, epsilons[2]-epsilon_delta)
+        epsilons[1]<-min(1, epsilons[1]+epsilon_delta)
+        epsilons[3]<-min(1, epsilons[3]+epsilon_delta)
+    } else if (path_match[3]) {
+        epsilons[1]<-max(0, epsilons[1]-epsilon_delta)
+        epsilons[3]<-min(1, epsilons[3]+epsilon_delta)
+        epsilons[2]<-min(1, epsilons[2]+epsilon_delta)
+    } else {
+        # epsilons[1]<-max(0, epsilons[1]-epsilon_delta)
+        # epsilons[2]<-max(0, epsilons[2]-epsilon_delta)
+        # epsilons[3]<-max(0, epsilons[3]-epsilon_delta)
+        epsilons[1]<-min(0, epsilons[1]+epsilon_delta)
+        epsilons[2]<-min(0, epsilons[2]+epsilon_delta)
+        epsilons[3]<-min(0, epsilons[3]+epsilon_delta)
+    }
+    return(epsilons)
 }
 
 #### for testing only
