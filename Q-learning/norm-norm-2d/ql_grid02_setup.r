@@ -169,14 +169,14 @@ r_distns[[k]]<-r_d_temp
 # 0.2, 0.5
 k<-2
 r_d_temp<-array(NA, dim=dim(q_map[[k]]))
-r_d_temp[1,]<-c(10,1)
+r_d_temp[1,]<-c(50,1)
 r_d_temp[2,]<-c(2.5,1)
 r_distns[[k]]<-r_d_temp
 
 # 0.4, 0.5
 k<-3
 r_d_temp<-array(NA, dim=dim(q_map[[k]]))
-r_d_temp[1,]<-c(50,1)
+r_d_temp[1,]<-c(10,1)
 r_d_temp[2,]<-c(1,1)
 r_distns[[k]]<-r_d_temp
 
@@ -212,7 +212,7 @@ r_distns[[k]]<-r_d_temp
 k<-8
 r_d_temp<-array(NA, dim=dim(q_map[[k]]))
 r_d_temp[1,]<-c(2.5,1)
-r_d_temp[2,]<-c(10,1)
+r_d_temp[2,]<-c(50,1)
 r_d_temp[3,]<-c(2.5,1)
 r_distns[[k]]<-r_d_temp
 
@@ -267,7 +267,7 @@ r_distns[[k]]<-r_d_temp
 k<-15
 r_d_temp<-array(NA, dim=dim(q_map[[k]]))
 r_d_temp[1,]<-c(1,1)
-r_d_temp[2,]<-c(50,1)
+r_d_temp[2,]<-c(10,1)
 r_d_temp[3,]<-c(1,1)
 r_distns[[k]]<-r_d_temp
 
@@ -305,7 +305,7 @@ r_distns[[k]]<-r_d_temp
 k<-20
 r_d_temp<-array(NA, dim=dim(q_map[[k]]))
 r_d_temp[1,]<-c(2.5,1)
-r_d_temp[2,]<-c(10,1)
+r_d_temp[2,]<-c(50,1)
 r_d_temp[3,]<-c(2.5,1)
 r_distns[[k]]<-r_d_temp
 
@@ -313,7 +313,7 @@ r_distns[[k]]<-r_d_temp
 k<-21
 r_d_temp<-array(NA, dim=dim(q_map[[k]]))
 r_d_temp[1,]<-c(1,1)
-r_d_temp[2,]<-c(50,1)
+r_d_temp[2,]<-c(10,1)
 r_d_temp[3,]<-c(1,1)
 r_distns[[k]]<-r_d_temp
 
@@ -350,14 +350,14 @@ r_distns[[k]]<-r_d_temp
 k<-26
 r_d_temp<-array(NA, dim=dim(q_map[[k]]))
 r_d_temp[1,]<-c(2.5,1)
-r_d_temp[2,]<-c(10,1)
+r_d_temp[2,]<-c(50,1)
 r_distns[[k]]<-r_d_temp
 
 # 0.4, 4
 k<-27
 r_d_temp<-array(NA, dim=dim(q_map[[k]]))
 r_d_temp[1,]<-c(1,1)
-r_d_temp[2,]<-c(50,1)
+r_d_temp[2,]<-c(10,1)
 r_distns[[k]]<-r_d_temp
 
 # 0.6, 4
