@@ -48,10 +48,9 @@ mu1<-5
 sig0<-1
 sig1<-1
 
-# params for sequential sampling and bootstrap variance estimation
+# params for sequential sampling 
 nummetrostep<-25
 metro_spread<-c(0.5)
-numbootstrap<-50
 
 # params for QL search
 alpha<-0.8
@@ -65,6 +64,8 @@ source('ql_grid_setup.r')
 
 # load QL algorithms
 source('ql_algorithm.r')
+
+epsilon<-0
 
 # num_traj<-200
 # num_episode<-50

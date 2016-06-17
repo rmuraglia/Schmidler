@@ -24,7 +24,7 @@ ql_search<-function(q_map, r_map, alpha, gamma, epsilon_init, epsilon_tau) {
 ## ql_episode subroutine represents a single episode of learning
 # each wave explores a single path using one bundle of samples
 # inputs: 
-# r_map : list by indexer (one entry per node), within list, place list by adjacent nodes, place n x 2 matrix for varBAR and varvarBAR for each bundle's evaluation
+# r_map : list by indexer (one entry per node), within list, place list by adjacent nodes, place n x 3 matrix for BARratio, varBAR and varvarBAR for each bundle's evaluation
 # q_map : list by indexer (one entry per node), each list entry  is vector of q values to neighbors
 
 ql_episode<-function(q_map, r_map, epsilon) {
@@ -33,16 +33,21 @@ ql_episode<-function(q_map, r_map, epsilon) {
     # agent holds info on current path and draws
     # at end, reprocess agent draws to determine var of each edge
     # report vars as rewards and update q map
-    agent_path<-vector()
-    agent_draws<-array(NA, dim=c(num_traj, 1))
-    agent_draws[,1]<-rnorm(num_traj, mean=mu0, sd=sig0)
-    agent_incr_weights<-array(NA, dim=c(num_traj, 1))
-    agent_norm_weights<-array(1/num_traj, dim=c(num_traj, 1))
 
+    # create path and collect forward trajectory draws
+    agent_path<-vector()
     agent_path[1]<-indexer_init
     iter_dummy<-0
 
-    while (!identical(agent_path[length(agent_path)], indexer_target)) { # until the agent has reached the target, continue the search
+    # create storage for forward draws and weights
+    draws_F<-array(NA, dim=c(num_traj, 1))
+    weights_F<-array(NA, dim=c(num_traj, 1))
+
+    # initialize values 
+    draws_F[,1]<-rnorm(num_traj, mean=mu0, sd=sig0)
+    weights_F[,1]<-1/num_traj
+
+    while(!identical(agent_path[length(agent_path)], indexer_target)) { #until the agent has reached the target, continue the search
 
         iter_dummy<-iter_dummy+1
 
@@ -64,30 +69,48 @@ ql_episode<-function(q_map, r_map, epsilon) {
         agent_path[iter_dummy+1]<-indexer_next
 
         # propagate particles
-        new_draws<-sapply(agent_draws[,iter_dummy],sis_transition, indexer_next)
-        agent_draws<-cbind(agent_draws, new_draws)
+        new_draws<-sapply(draws_F[,iter_dummy],smc_transition, indexer_next)
+        draws_F<-cbind(draws_F, new_draws)
 
-        # calculate weights for ratio estimation
-        agent_incr_weights<-cbind(agent_incr_weights, get_incr_weight(agent_draws[,iter_dummy], agent_path[iter_dummy], agent_path[iter_dummy+1]))
-        agent_norm_weights<-cbind(agent_norm_weights, (agent_norm_weights[,iter_dummy]*agent_incr_weights[,iter_dummy+1])/sum(agent_norm_weights[,iter_dummy]*agent_incr_weights[,iter_dummy+1]))
+        # calculate particle weights
+        p_weight<-get_p_weight(draws_F[,iter_dummy], weights_F[,iter_dummy], agent_path[iter_dummy], agent_path[iter_dummy+1])
+        weights_F<-cbind(weights_F, p_weight)
 
-        # bootstrap to get variance of ratio estimation
-        estim_vec<-replicate(numbootstrap, boot_var_ratio(agent_norm_weights[,iter_dummy], agent_incr_weights[,iter_dummy+1]))
-        action_reward<-var(log(estim_vec))
-        reward_entry<-c(action_reward, 1) # for SIS case, start with uninformative 1 variance of variance - all estimates of reward are considered equally important
+        # continue particle propagation until path is complete
+    }
 
-        # update r_map
-        r_map[[curr_index]][[next_index]]<-rbind(r_map[[curr_index]][[next_index]], reward_entry)
+    # propagate particles backwards
+    draws_R<-array(NA, dim=dim(draws_F))
+    weights_R<-array(NA, dim=dim(weights_F))
+    draws_R[,ncol(draws_R)]<-rnorm(num_traj, mean=mu1, sd=sig1)
+    weights_R[,ncol(weights_R)]<-1/num_traj
 
-        # update q_map
-        q_entry<-as.numeric(q_map[[curr_index]][next_index, 2])
-        r_entry<-mean(r_map[[curr_index]][[next_index]][,1] , na.rm=TRUE)
-        q_prime_ind<-which(indexer==indexer_next)
+    for (i in (ncol(draws_R)-1):1) {
+        draws_R[,i]<-sapply(draws_R[,i+1], smc_transition, agent_path[i])
+        weights_R[,i]<-get_p_weight(draws_R[,i+1], weights_R[,i+1], agent_path[i+1], agent_path[i])
+    }
+
+    # process forward and reverse weighted trajectories to obtain ratio and var(ratio) estimates.
+    r_map_updates<-process_trajectories(draws_F, draws_R, weights_F, weights_R, agent_path)
+
+    # update maps
+    for (i in 1:ncol(r_map_updates)) {
+
+        # get current state and next state indexers and indices
+        state_current<-agent_path[i]
+        state_next<-agent_path[i+1]
+        index_current<-which(indexer==state_current)
+        index_next<-which(names(r_map[[index_current]])==state_next)
+
+        # add r map entries
+        r_map[[index_current]][[index_next]]<-rbind(r_map[[index_current]][[index_next]], c(r_map_updates[,i], 1))
+
+        # update q map
+        q_entry<-as.numeric(q_map[[index_current]][index_next, 2])
+        r_entry<-mean(r_map[[index_current]][[index_next]][,2] , na.rm=TRUE)
+        q_prime_ind<-which(indexer==state_next)
         q_prime_val<-min(as.numeric(q_map[[q_prime_ind]][,2]))
-        q_map[[curr_index]][next_index, 2]<-q_score(q_entry, r_entry, q_prime_val)
-        # q_prime_val<-max(as.numeric(q_map[[q_prime_ind]][,2]))
-        # q_map[[curr_index]][next_index, 2]<-q_score(q_entry, -r_entry, q_prime_val)
-
+        q_map[[index_current]][index_next, 2]<-q_score(q_entry, r_entry, q_prime_val)
     }
     return(list(q_map, r_map))
 }
@@ -105,6 +128,26 @@ q_choice<-function(map, e) {
 q_score<-function(q, r, q_prime) {
     new_qsc<-q + alpha*(r + gamma*q_prime - q)
     return(new_qsc)
+}
+
+ql_path_soln<-function(q_map) {
+    path_soln<-list(indexer_init)
+
+    # until final state in path is target state, keep searching unless have break
+    while (path_soln[[length(path_soln)]] != indexer_target) {
+        prev_ind<-which(indexer==path_soln[[length(path_soln)]])
+        prev_q<-q_map[[prev_ind]]
+        next_ind<-which.min(prev_q[,2])
+        next_path<-prev_q[next_ind,1]
+
+        if (next_path %in% path_soln) { # if path contains loop, break and return no path
+            path_soln<-NA
+            break
+        } else {
+            path_soln[[length(path_soln)+1]]<-next_path
+        }
+    }
+    return(path_soln)
 }
 
 # testing vars
