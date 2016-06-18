@@ -21,15 +21,16 @@ switch(Sys.info()[['sysname']],
 
 print ('Reading parameters from command line if present...')
 args<-commandArgs(trailingOnly=TRUE)
-if (length(args)==7) { # if appropriate number, use
-    move_jump<-as.numeric(args[1])
-    temp_numpoints<-as.numeric(args[2])
-    lambda_numpoints<-as.numeric(args[3])
-    temp_min<-as.numeric(args[4])
-    temp_max<-as.numeric(args[5])
-    temp_dof<-as.numeric(args[6])
-    num_traj<-as.numeric(args[7])
-    num_episode<-200
+if (length(args)==1) { # if appropriate number, use
+    repnum<-as.numeric(args[1])
+    # move_jump<-as.numeric(args[1])
+    # temp_numpoints<-as.numeric(args[2])
+    # lambda_numpoints<-as.numeric(args[3])
+    # temp_min<-as.numeric(args[4])
+    # temp_max<-as.numeric(args[5])
+    # temp_dof<-as.numeric(args[6])
+    # num_traj<-as.numeric(args[7])
+    # num_episode<-as.numeric(args[8])
 } else { # else use following defaults
     move_jump<-1
     temp_numpoints<-5
@@ -38,9 +39,17 @@ if (length(args)==7) { # if appropriate number, use
     temp_max<-4
     temp_dof<-TRUE
     num_traj<-100
-    # num_episode<-600
-    num_episode<-200
+    num_episode<-600
 }
+
+move_jump<-1
+temp_numpoints<-5
+lambda_numpoints<-6
+temp_min<-0.5
+temp_max<-4
+temp_dof<-TRUE
+num_traj<-100
+num_episode<-600
 
 # end point distribution params
 mu0<-0
@@ -67,6 +76,8 @@ source('ql_algorithm.r')
 
 tim<-ql_full_history(q_map, r_map, alpha, gamma, epsilon_init, epsilon_tau)
 
-# tim<-ql_search(q_map, r_map, alpha, gamma, epsilon_init, epsilon_tau)
+source('ql_viz_fullhist.r')
+
+# call ql_viz_fullshit.r
 
 

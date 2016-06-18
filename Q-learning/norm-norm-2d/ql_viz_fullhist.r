@@ -5,6 +5,10 @@ library(grid)
 library(gridExtra)
 library(gplots)
 
+idnum<-sprintf('%02d', repnum)
+filename<-paste('normnorm-monitor-', idnum, sep='')
+# filename<-'normnorm-monitor-01'
+
 # unique(tim[[1]])
 unique_solns<-unique(tim[[1]])
 num_solns<-length(unique_solns)
@@ -58,10 +62,8 @@ print(length(plot_inds))
 
 plot_args<-c(path_overviews[plot_inds], list(ncol=4, widths=c(1,1,1,1)))
 
-filename<-'normnorm-monitor-TEST'
+write.table(plot_df, file=paste(filename, '.txt', sep=''), quote=FALSE, sep='\t', row.names=FALSE, col.names=TRUE)
 
-write.table(plot_df, file=paste(filename, '.txt'), quote=FALSE, sep='\t', row.names=FALSE, col.names=TRUE)
-
-png(filename=paste(filename, '.png'), width=1200, height=900, res=100)
+png(filename=paste(filename, '.png', sep=''), width=1200, height=1200, res=100)
 do.call(grid.arrange, plot_args)
 dev.off()

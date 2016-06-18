@@ -38,24 +38,6 @@ ql_full_history<-function(q_map, r_map, alpha, gamma, epsilon_init, epsilon_tau)
     return(list(path_solns, path_ratios, path_vars))
 }
 
-ql_search<-function(q_map, r_map, alpha, gamma, epsilon_init, epsilon_tau) {
-
-    # carry out a preset number of search episodes
-    delta_epsilon<-1/epsilon_tau
-    maps<-list(q_map, r_map)
-
-    for (i in 1:epsilon_tau) {
-        print(i)
-        maps<-ql_episode(maps[[1]], maps[[2]], epsilon_init+(i-1)*delta_epsilon)
-    }
-    for (i in (epsilon_tau+1):num_episode) {
-        print(i)
-        maps<-ql_episode(maps[[1]], maps[[2]], 1)
-    }
-
-    return(maps)
-}
-
 ## ql_episode subroutine represents a single episode of learning
 # each wave explores a single path using one bundle of samples
 # inputs: 
