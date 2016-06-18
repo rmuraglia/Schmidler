@@ -37,7 +37,7 @@ if (length(args)==7) { # if appropriate number, use
     temp_min<-0.5
     temp_max<-4
     temp_dof<-TRUE
-    num_traj<-500
+    num_traj<-100
     # num_episode<-600
     num_episode<-200
 }
@@ -56,7 +56,7 @@ metro_spread<-c(0.5)
 alpha<-0.8
 gamma<-1
 epsilon_init<-0
-epsilon_tau<-170
+epsilon_tau<-floor(0.85*num_episode)
 # epsilon_tau<-450 # determines episilon rate of change - end searching on epsilon_tau'th search episode
 
 # set up grid
@@ -65,12 +65,8 @@ source('ql_grid_setup.r')
 # load QL algorithms
 source('ql_algorithm.r')
 
-epsilon<-0
+tim<-ql_full_history(q_map, r_map, alpha, gamma, epsilon_init, epsilon_tau)
 
-# num_traj<-200
-# num_episode<-50
-# epsilon_tau<-30
-
-tim<-ql_search(q_map, r_map, alpha, gamma, epsilon_init, epsilon_tau)
+# tim<-ql_search(q_map, r_map, alpha, gamma, epsilon_init, epsilon_tau)
 
 

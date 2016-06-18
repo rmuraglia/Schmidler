@@ -3,6 +3,41 @@
 # to be called by ql_master.r
 # define Q-learning algorithm. adapted to minimize cost instead of maximize reward
 
+ql_full_history<-function(q_map, r_map, alpha, gamma, epsilon_init, epsilon_tau) {
+
+    maps<-list(q_map, r_map)
+    delta_epsilon<-1/epsilon_tau
+    path_solns<-vector('list', length=num_episode)
+    path_ratios<-rep(NA, length.out=num_episode)
+    path_vars<-rep(NA, length.out=num_episode)
+
+    for (i in 1:epsilon_tau) {
+        print(i)
+        maps<-ql_episode(maps[[1]], maps[[2]], epsilon_init+(i-1)*delta_epsilon)
+        path_soln_temp<-ql_path_soln(maps[[1]])
+        path_ratio_temp<-ql_path_ratio(maps[[2]], path_soln_temp)
+        path_var_temp<-ql_path_var(maps[[2]], path_soln_temp)
+        path_soln_mat<-t(sapply(path_soln_temp, split_func))
+        if (!any(is.na(path_soln_mat))) { colnames(path_soln_mat)<-c('lambda', 'temperature') }
+        path_solns[[i]]<-path_soln_mat
+        path_ratios[i]<-path_ratio_temp
+        path_vars[i]<-path_var_temp
+    }
+    for (i in (epsilon_tau+1):num_episode) {
+        print(i)
+        maps<-ql_episode(maps[[1]], maps[[2]], 1)
+        path_soln_temp<-ql_path_soln(maps[[1]])
+        path_ratio_temp<-ql_path_ratio(maps[[2]], path_soln_temp)
+        path_var_temp<-ql_path_var(maps[[2]], path_soln_temp)
+        path_soln_mat<-t(sapply(path_soln_temp, split_func))
+        if (!any(is.na(path_soln_mat))) { colnames(path_soln_mat)<-c('lambda', 'temperature') }
+        path_solns[[i]]<-path_soln_mat
+        path_ratios[i]<-path_ratio_temp
+        path_vars[i]<-path_var_temp
+    }
+    return(list(path_solns, path_ratios, path_vars))
+}
+
 ql_search<-function(q_map, r_map, alpha, gamma, epsilon_init, epsilon_tau) {
 
     # carry out a preset number of search episodes
@@ -148,6 +183,40 @@ ql_path_soln<-function(q_map) {
         }
     }
     return(path_soln)
+}
+
+ql_path_ratio<-function(r_map, path_soln) {
+    ratio<-1
+    if (any(is.na(path_soln))) { ratio<-NA
+    } else {
+        for (i in 1:(length(path_soln)-1)) {
+            prev_ind<-which(indexer==path_soln[[i]])
+            ratio_ind<-which(names(r_map[[prev_ind]])==path_soln[i+1])
+            step_ratio<-weighted.mean(r_map[[prev_ind]][[ratio_ind]][,1], 1/r_map[[prev_ind]][[ratio_ind]][,2], na.rm=TRUE)
+            ratio<-ratio*step_ratio
+        }
+    }
+    return(ratio)
+}
+
+ql_path_var<-function(r_map, path_soln) {
+    cost<-0
+    if (any(is.na(path_soln))) { cost<-NA
+    } else {
+        for (i in 1:(length(path_soln)-1)) {
+            prev_ind<-which(indexer==path_soln[[i]])
+            cost_ind<-which(names(r_map[[prev_ind]])==path_soln[i+1])
+            step_cost<-weighted.mean(r_map[[prev_ind]][[cost_ind]][,2], r_map[[prev_ind]][[cost_ind]][,3], na.rm=TRUE)
+            cost<-cost+step_cost
+        }
+    }
+    return(cost)
+}
+
+split_func<-function(x) { 
+    if(any(is.na(x))) { out<-NA
+    } else { out<-as.numeric(unlist(strsplit(x, split='_'))) }
+    return(out)
 }
 
 # testing vars
