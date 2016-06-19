@@ -38,6 +38,112 @@ ql_full_history<-function(q_map, r_map, alpha, gamma, epsilon_init, epsilon_tau)
     return(list(path_solns, path_ratios, path_vars))
 }
 
+ql_three_chain<-function(q_map, r_map, alpha, gamma, min_episode, conv_tol) {
+
+    # initialize three map sets
+    maps1<-list(q_map, r_map)
+    maps2<-maps1
+    maps3<-maps1
+    epsilons<-c(0,0,0)
+
+    # run minimum number of random searches
+    for (ql_iter in 1:min_episode) {
+        print(ql_iter)
+        maps1<-ql_episode(maps1[[1]], maps1[[2]], 0)
+        maps2<-ql_episode(maps2[[1]], maps2[[2]], 0)
+        maps3<-ql_episode(maps3[[1]], maps3[[2]], 0)
+    }
+
+    # get solution paths, ratio estimates and variance estimates
+    soln1<-ql_path_soln(maps1[[1]])
+    soln2<-ql_path_soln(maps2[[1]])
+    soln3<-ql_path_soln(maps3[[1]])
+    ratio1<-ql_path_ratio(maps1[[2]], soln1)
+    ratio2<-ql_path_ratio(maps2[[2]], soln2)
+    ratio3<-ql_path_ratio(maps3[[2]], soln3)
+    var1<-ql_path_var(maps1[[2]], soln1)
+    var2<-ql_path_var(maps2[[2]], soln2)
+    var3<-ql_path_var(maps3[[2]], soln3)
+
+    ## if desired, add convergence criteria based on path identity
+    # path_match<-c(identical(soln1, soln2), identical(soln1, soln3), identical(soln2, soln3))
+    # path_conv<-all(path_match)
+    path_conv<-TRUE
+
+    ## convergence criteria based on ratio estimate similarity
+    # get standard deviations and ratio intervals
+    sd1<-sqrt(var1*ratio1^2)
+    sd2<-sqrt(var2*ratio2^2)
+    sd3<-sqrt(var3*ratio3^2)
+    interval1<-c(ratio1-sd1*conv_tol, ratio1+sd1*conv_tol)
+    interval2<-c(ratio2-sd2*conv_tol, ratio2+sd2*conv_tol)
+    interval3<-c(ratio3-sd3*conv_tol, ratio3+sd3*conv_tol)
+
+    # determine if intervals are overlapping
+    overlap1<-overlap_check(interval1[1], interval1[2], interval2[1], interval2[2])
+    overlap2<-overlap_check(interval1[1], interval1[2], interval3[1], interval3[2])
+    overlap3<-overlap_check(interval2[1], interval2[2], interval3[1], interval3[2])
+    cost_match<-c(overlap1, overlap2, overlap3)
+    cost_conv<-all(cost_match)
+
+    # storage for cost_matches
+    cost_archive<-array(NA, dim=c((max_episode-min_episode), length(cost_match)))
+
+    # set epsilons to a mostly random value
+    epsilons<-c(0.3, 0.3, 0.3)
+
+    while(!(path_conv & cost_conv)) {
+        ql_iter<-ql_iter+1
+        print(ql_iter)
+
+        # update epsilons based on cost match only
+        epsilons<-epsilon_update_cost(epsilons, cost_match)
+
+        # run next search episode
+        maps1<-ql_episode(maps1[[1]], maps1[[2]], epsilons[1])
+        maps2<-ql_episode(maps2[[1]], maps2[[2]], epsilons[2])
+        maps3<-ql_episode(maps3[[1]], maps3[[2]], epsilons[3])
+
+        # get new solution paths, ratio estimates and variance estimates
+        soln1<-ql_path_soln(maps1[[1]])
+        soln2<-ql_path_soln(maps2[[1]])
+        soln3<-ql_path_soln(maps3[[1]])
+        ratio1<-ql_path_ratio(maps1[[2]], soln1)
+        ratio2<-ql_path_ratio(maps2[[2]], soln2)
+        ratio3<-ql_path_ratio(maps3[[2]], soln3)
+        var1<-ql_path_var(maps1[[2]], soln1)
+        var2<-ql_path_var(maps2[[2]], soln2)
+        var3<-ql_path_var(maps3[[2]], soln3)
+
+        # update convergence criteria
+        # path_match<-c(identical(soln1, soln2), identical(soln1, soln3), identical(soln2, soln3))
+        # path_conv<-all(path_match)
+        sd1<-sqrt(var1*ratio1^2)
+        sd2<-sqrt(var2*ratio2^2)
+        sd3<-sqrt(var3*ratio3^2)
+        interval1<-c(ratio1-sd1*conv_tol, ratio1+sd1*conv_tol)
+        interval2<-c(ratio2-sd2*conv_tol, ratio2+sd2*conv_tol)
+        interval3<-c(ratio3-sd3*conv_tol, ratio3+sd3*conv_tol)
+        overlap1<-overlap_check(interval1[1], interval1[2], interval2[1], interval2[2])
+        overlap2<-overlap_check(interval1[1], interval1[2], interval3[1], interval3[2])
+        overlap3<-overlap_check(interval2[1], interval2[2], interval3[1], interval3[2])
+        cost_match<-c(overlap1, overlap2, overlap3)
+        cost_conv<-all(cost_match)
+        cost_archive[ql_iter-min_episode,]<-cost_match
+
+        print(cost_match)
+
+        if (ql_iter>max_episode) { break }
+    }
+
+    # record final search results
+    solns<-list(soln1, soln2, soln3)
+    ratios<-c(ratio1, ratio2, ratio3)
+    vars<-c(var1, var2, var3)
+    cost_archive<-cost_archive[complete.cases(cost_archive),]
+    return(list(solns, ratios, vars, cost_archive))
+}
+
 ## ql_episode subroutine represents a single episode of learning
 # each wave explores a single path using one bundle of samples
 # inputs: 
@@ -199,6 +305,33 @@ split_func<-function(x) {
     if(any(is.na(x))) { out<-NA
     } else { out<-as.numeric(unlist(strsplit(x, split='_'))) }
     return(out)
+}
+
+overlap_check<-function(x1, x2, y1, y2) { return(x1<=y2 && y1<=x2) }
+
+epsilon_update_cost<-function(epsilons, cost_match) {
+    epsilon_delta<-0.005
+    if (cost_match[1]) {
+        epsilons[3]<-max(0, epsilons[3]-epsilon_delta)
+        epsilons[1]<-min(1, epsilons[1]+epsilon_delta)
+        epsilons[2]<-min(1, epsilons[2]+epsilon_delta)
+    } else if (cost_match[2]) {
+        epsilons[2]<-max(0, epsilons[2]-epsilon_delta)
+        epsilons[1]<-min(1, epsilons[1]+epsilon_delta)
+        epsilons[3]<-min(1, epsilons[3]+epsilon_delta)
+    } else if (cost_match[3]) {
+        epsilons[1]<-max(0, epsilons[1]-epsilon_delta)
+        epsilons[3]<-min(1, epsilons[3]+epsilon_delta)
+        epsilons[2]<-min(1, epsilons[2]+epsilon_delta)
+    } else {
+        epsilons[1]<-max(0, epsilons[1]-epsilon_delta)
+        epsilons[2]<-max(0, epsilons[2]-epsilon_delta)
+        epsilons[3]<-max(0, epsilons[3]-epsilon_delta)
+        # epsilons[1]<-min(0, epsilons[1]+epsilon_delta)
+        # epsilons[2]<-min(0, epsilons[2]+epsilon_delta)
+        # epsilons[3]<-min(0, epsilons[3]+epsilon_delta)
+    }
+    return(epsilons)
 }
 
 # testing vars
