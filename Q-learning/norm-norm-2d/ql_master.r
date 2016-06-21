@@ -69,7 +69,8 @@ epsilon_tau<-floor(0.85*num_episode)
 # epsilon_tau<-450 # determines episilon rate of change - end searching on epsilon_tau'th search episode
 min_episode<-30
 max_episode<-600
-conv_tol<-0.25 # have window of +/- 1 standard deviation around ratio estimate - if intervals overlap call it close enough
+composite_tol<-0.125
+chain_sd_mult<-1
 
 
 # set up grid
@@ -78,7 +79,9 @@ source('ql_grid_setup.r')
 # load QL algorithms
 source('ql_algorithm.r')
 
-tim<-ql_three_chain(q_map, r_map, alpha, gamma, min_episode, conv_tol)
+tim<-ql_three_chain(q_map, r_map, alpha, gamma, min_episode, composite_tol)
+
+source('ql_viz_3chain.r')
 
 # tim<-ql_full_history(q_map, r_map, alpha, gamma, epsilon_init, epsilon_tau)
 

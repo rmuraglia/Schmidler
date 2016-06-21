@@ -48,3 +48,4 @@ Temporary Items
 *.png
 Q-learning/norm-norm-2d/maze-grid01-3chains-07.note
 *.txt
+*.RData
