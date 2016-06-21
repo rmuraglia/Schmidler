@@ -35,6 +35,9 @@ path3<-as.data.frame(path3)
 p3<-ggplot(data=point_grid, aes(x=lambda, y=temperature)) + geom_point() + geom_path(data=path3, arrow=arrow(), size=3) + labs(title=paste('ratio=', round(tim[[2]][3],4), ', var=', round(tim[[3]][3],4), sep=''))
 
 outplot<-arrangeGrob(infopanel, p1, p2, p3, nrow=2)
-png(filename=paste(filename, '.png', sep=''), width=800, height=800, res=100)
-outplot
-dev.off()
+
+ggsave(file=paste(filename, '.png', sep=''), width=8, height=8, dpi=100, plot=outplot)
+
+# png(filename=paste(filename, '.png', sep=''), width=800, height=800, res=100)
+# outplot
+# dev.off()

@@ -49,3 +49,4 @@ Temporary Items
 Q-learning/norm-norm-2d/maze-grid01-3chains-07.note
 *.txt
 *.RData
+Q-learning/norm-norm-2d/cost_conv_tests.r
