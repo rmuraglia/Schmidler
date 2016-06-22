@@ -6,7 +6,11 @@ library(gridExtra)
 library(gplots)
 
 idnum<-sprintf('%02d', repnum)
-filename<-paste('normnorm-monitor-', idnum, sep='')
+if (temp_dof) {
+    filename<-paste('normnorm-monitor-', idnum, sep='')
+} else {
+    filename<-paste('normnorm-monitor-restrict-', idnum, sep='')
+}
 # filename<-'normnorm-monitor-01'
 
 # unique(tim[[1]])
@@ -64,6 +68,13 @@ plot_args<-c(path_overviews[plot_inds], list(ncol=4, widths=c(1,1,1,1)))
 
 write.table(plot_df, file=paste(filename, '.txt', sep=''), quote=FALSE, sep='\t', row.names=FALSE, col.names=TRUE)
 
-png(filename=paste(filename, '.png', sep=''), width=1200, height=1200, res=100)
-do.call(grid.arrange, plot_args)
-dev.off()
+
+if (temp_dof) {
+    png(filename=paste(filename, '.png', sep=''), width=1200, height=1200, res=100)
+    do.call(grid.arrange, plot_args)
+    dev.off()
+} else {
+    outplot<-arrangeGrob(infopanel, ratioplot, varplot, nrow=1)
+    ggsave(file=paste(filename, '.png', sep=''), width=12, height=4, dpi=100, plot=outplot)
+}
+

@@ -6,7 +6,11 @@ library(gridExtra)
 library(gplots)
 
 idnum<-sprintf('%02d', repnum)
-filename<-paste('normnorm-3chains-', idnum, sep='')
+if (temp_dof) {
+    filename<-paste('normnorm-3chains-', idnum, sep='')
+} else {
+    filename<-paste('normnorm-3chains-restrict-', idnum, sep='')
+}
 save.image(paste(filename, '.RData', sep=''))
 
 # info panel

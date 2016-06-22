@@ -122,7 +122,7 @@ for (i in 1:length(point_list)) {
     neighbors<-t(apply(valid_moves, 1, move_result, point_list[[i]]))
 
     # if first entry of point list is lambdamax, then only allow neighbors that are above/below such that it goes towards the target
-    if (point_list[[i]][1]==lambda_max) {
+    if (temp_dof && point_list[[i]][1]==lambda_max) {
         rm_ind<-vector()
         if (point_list[[i]][2]>state_target[2]) {
             rm_ind<-which(neighbors[,2]>point_list[[i]][2])
