@@ -53,7 +53,8 @@ num_traj<-100
 num_episode<-300
 
 # temp_dof<-TRUE
-# temp_dof<-FALSE
+temp_dof<-FALSE
+repnum<-20
 
 # end point distribution params
 mu0<-0
@@ -72,8 +73,9 @@ epsilon_init<-0
 epsilon_tau<-floor(0.85*num_episode)
 # epsilon_tau<-450 # determines episilon rate of change - end searching on epsilon_tau'th search episode
 min_episode<-30
-max_episode<-600
-composite_tol<-0.15
+max_episode<-1000
+composite_tol<-0.025
+# composite_tol<-0.05
 chain_sd_mult<-1
 
 

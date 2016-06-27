@@ -61,9 +61,9 @@ ql_three_chain<-function(q_map, r_map, alpha, gamma, min_episode, conv_tol) {
     ratio1<-ql_path_ratio(maps1[[2]], soln1)
     ratio2<-ql_path_ratio(maps2[[2]], soln2)
     ratio3<-ql_path_ratio(maps3[[2]], soln3)
-    var1<-ql_path_var(maps1[[2]], soln1)
-    var2<-ql_path_var(maps2[[2]], soln2)
-    var3<-ql_path_var(maps3[[2]], soln3)
+    var1<-ql_path_var_scaled(maps1[[2]], soln1)
+    var2<-ql_path_var_scaled(maps2[[2]], soln2)
+    var3<-ql_path_var_scaled(maps3[[2]], soln3)
 
     ## if desired, add convergence criteria based on path identity
     # path_match<-c(identical(soln1, soln2), identical(soln1, soln3), identical(soln2, soln3))
@@ -86,7 +86,7 @@ ql_three_chain<-function(q_map, r_map, alpha, gamma, min_episode, conv_tol) {
 
         # update epsilons based on ratio match only
         epsilons<-mapply(epsilon_update_cost3, epsilons, ratio_conv_vec)
-        print(epsilons)
+        # print(epsilons)
 
         # run next search episode
         maps1<-ql_episode(maps1[[1]], maps1[[2]], epsilons[1])
@@ -100,9 +100,9 @@ ql_three_chain<-function(q_map, r_map, alpha, gamma, min_episode, conv_tol) {
         ratio1<-ql_path_ratio(maps1[[2]], soln1)
         ratio2<-ql_path_ratio(maps2[[2]], soln2)
         ratio3<-ql_path_ratio(maps3[[2]], soln3)
-        var1<-ql_path_var(maps1[[2]], soln1)
-        var2<-ql_path_var(maps2[[2]], soln2)
-        var3<-ql_path_var(maps3[[2]], soln3)
+        var1<-ql_path_var_scaled(maps1[[2]], soln1)
+        var2<-ql_path_var_scaled(maps2[[2]], soln2)
+        var3<-ql_path_var_scaled(maps3[[2]], soln3)
 
         # update convergence criteria
         # path_match<-c(identical(soln1, soln2), identical(soln1, soln3), identical(soln2, soln3))
@@ -112,6 +112,8 @@ ql_three_chain<-function(q_map, r_map, alpha, gamma, min_episode, conv_tol) {
         
         ratio_conv_archive[ql_iter-min_episode,]<-ratio_conv_vec
         print(ratio_conv_vec)
+        print(rbind(c(ratio1, ratio2, ratio3), c(var1, var2, var3)))
+
 
         if (ql_iter>=max_episode) { break }
     }
@@ -276,6 +278,21 @@ ql_path_var<-function(r_map, path_soln) {
             cost_ind<-which(names(r_map[[prev_ind]])==path_soln[i+1])
             step_cost<-weighted.mean(r_map[[prev_ind]][[cost_ind]][,2], r_map[[prev_ind]][[cost_ind]][,3], na.rm=TRUE)
             cost<-cost+step_cost
+        }
+    }
+    return(cost)
+}
+
+ql_path_var_scaled<-function(r_map, path_soln) {
+    cost<-0
+    if (any(is.na(path_soln))) { cost<-NA
+    } else {
+        for (i in 1:(length(path_soln)-1)) {
+            prev_ind<-which(indexer==path_soln[[i]])
+            cost_ind<-which(names(r_map[[prev_ind]])==path_soln[i+1])
+            step_cost<-weighted.mean(r_map[[prev_ind]][[cost_ind]][,2], r_map[[prev_ind]][[cost_ind]][,3], na.rm=TRUE)
+            step_traversals<-nrow(r_map[[prev_ind]][[cost_ind]])-1 # remove one for the NA row used for initialization
+            cost<-cost+step_cost/step_traversals
         }
     }
     return(cost)
