@@ -24,19 +24,19 @@ infopanel<-labelplot+geom_text(x=0, y=0, label=title_string, size=3) + theme(axi
 path1<-t(sapply(tim[[1]][[1]], split_func))
 colnames(path1)<-c('lambda', 'temperature')
 path1<-as.data.frame(path1)
-p1<-ggplot(data=point_grid, aes(x=lambda, y=temperature)) + geom_point() + geom_path(data=path1, arrow=arrow(), size=3) + labs(title=paste('ratio=', round(tim[[2]][1],4), ', var=', round(tim[[3]][1],4), sep=''))
+p1<-ggplot(data=point_grid, aes(x=lambda, y=temperature)) + geom_point() + geom_path(data=path1, arrow=arrow(), size=3) + labs(title=paste('ratio=', round(tim[[2]][1],4), ', var=', round(tim[[3]][1],6), sep=''))
 
 # second chain
 path2<-t(sapply(tim[[1]][[2]], split_func))
 colnames(path2)<-c('lambda', 'temperature')
 path2<-as.data.frame(path2)
-p2<-ggplot(data=point_grid, aes(x=lambda, y=temperature)) + geom_point() + geom_path(data=path2, arrow=arrow(), size=3) + labs(title=paste('ratio=', round(tim[[2]][2],4), ', var=', round(tim[[3]][2],4), sep=''))
+p2<-ggplot(data=point_grid, aes(x=lambda, y=temperature)) + geom_point() + geom_path(data=path2, arrow=arrow(), size=3) + labs(title=paste('ratio=', round(tim[[2]][2],4), ', var=', round(tim[[3]][2],6), sep=''))
 
 # third chain
 path3<-t(sapply(tim[[1]][[3]], split_func))
 colnames(path3)<-c('lambda', 'temperature')
 path3<-as.data.frame(path3)
-p3<-ggplot(data=point_grid, aes(x=lambda, y=temperature)) + geom_point() + geom_path(data=path3, arrow=arrow(), size=3) + labs(title=paste('ratio=', round(tim[[2]][3],4), ', var=', round(tim[[3]][3],4), sep=''))
+p3<-ggplot(data=point_grid, aes(x=lambda, y=temperature)) + geom_point() + geom_path(data=path3, arrow=arrow(), size=3) + labs(title=paste('ratio=', round(tim[[2]][3],4), ', var=', round(tim[[3]][3],6), sep=''))
 
 outplot<-arrangeGrob(infopanel, p1, p2, p3, nrow=2)
 

@@ -21,9 +21,10 @@ switch(Sys.info()[['sysname']],
 
 print ('Reading parameters from command line if present...')
 args<-commandArgs(trailingOnly=TRUE)
-if (length(args)==2) { # if appropriate number, use
+if (length(args)==3) { # if appropriate number, use
     repnum<-as.numeric(args[1])
     temp_dof<-as.logical(args[2])
+    composite_tol<-as.numeric(args[3])
     # move_jump<-as.numeric(args[1])
     # temp_numpoints<-as.numeric(args[2])
     # lambda_numpoints<-as.numeric(args[3])
@@ -53,12 +54,12 @@ num_traj<-100
 num_episode<-300
 
 # temp_dof<-TRUE
-temp_dof<-FALSE
-repnum<-20
+# temp_dof<-FALSE
+# repnum<-20
 
 # end point distribution params
 mu0<-0
-mu1<-5
+mu1<-10
 sig0<-1
 sig1<-1
 
@@ -74,7 +75,7 @@ epsilon_tau<-floor(0.85*num_episode)
 # epsilon_tau<-450 # determines episilon rate of change - end searching on epsilon_tau'th search episode
 min_episode<-30
 max_episode<-1000
-composite_tol<-0.025
+# composite_tol<-0.025
 # composite_tol<-0.05
 chain_sd_mult<-1
 
