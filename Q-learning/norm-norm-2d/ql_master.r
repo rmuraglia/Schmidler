@@ -59,9 +59,9 @@ num_episode<-300
 
 # end point distribution params
 mu0<-0
-mu1<-10
-sig0<-1
-sig1<-1
+mu1<-5
+sig0<-0.7
+sig1<-0.7
 
 # params for sequential sampling 
 nummetrostep<-25
