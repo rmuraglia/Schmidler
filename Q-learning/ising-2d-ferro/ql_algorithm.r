@@ -1,7 +1,8 @@
 # ql_algorithm.r
 
 # to be called by ql_master.r
-# define Q-learning algorithm. adapted to minimize cost instead of maximize reward
+# for use with the 2D Ising ferromagnet example
+# define Q-learning algorithm and helpers. adapted to minimize cost instead of maximize reward.
 
 ql_full_history<-function(q_map, r_map, alpha, gamma, epsilon_init, epsilon_tau) {
 
@@ -12,147 +13,77 @@ ql_full_history<-function(q_map, r_map, alpha, gamma, epsilon_init, epsilon_tau)
     path_vars<-rep(NA, length.out=num_episode)
 
     for (i in 1:epsilon_tau) {
+
+        # in first phase, epsilon varies predictably from fully random to fully greedy
+
+        # print progress
         print(i)
+
+        # run one episode and update maps
         maps<-ql_episode(maps[[1]], maps[[2]], epsilon_init+(i-1)*delta_epsilon)
+
+        # get summary output - solution paths, ratios, variances...
         path_soln_temp<-ql_path_soln(maps[[1]])
         path_ratio_temp<-ql_path_ratio(maps[[2]], path_soln_temp)
         path_var_temp<-ql_path_var(maps[[2]], path_soln_temp)
         path_soln_mat<-t(sapply(path_soln_temp, split_func))
-        if (!any(is.na(path_soln_mat))) { colnames(path_soln_mat)<-c('lambda', 'temperature') }
+        if (!any(is.na(path_soln_mat))) { colnames(path_soln_mat)<-c('beta', 'magnetic_field') }
         path_solns[[i]]<-path_soln_mat
         path_ratios[i]<-path_ratio_temp
         path_vars[i]<-path_var_temp
     }
+
     for (i in (epsilon_tau+1):num_episode) {
+
+        # in the second phase, epsilon is fixed on the fully greedy value. exploration is over.
+
+        # print progress
         print(i)
+
+        # run episode
         maps<-ql_episode(maps[[1]], maps[[2]], 1)
+
+        # get summary output
         path_soln_temp<-ql_path_soln(maps[[1]])
         path_ratio_temp<-ql_path_ratio(maps[[2]], path_soln_temp)
         path_var_temp<-ql_path_var(maps[[2]], path_soln_temp)
         path_soln_mat<-t(sapply(path_soln_temp, split_func))
-        if (!any(is.na(path_soln_mat))) { colnames(path_soln_mat)<-c('lambda', 'temperature') }
+        if (!any(is.na(path_soln_mat))) { colnames(path_soln_mat)<-c('beta', 'magnetic_field') }
         path_solns[[i]]<-path_soln_mat
         path_ratios[i]<-path_ratio_temp
         path_vars[i]<-path_var_temp
     }
+
+    # return full history of summary output
     return(list(path_solns, path_ratios, path_vars))
 }
 
-ql_three_chain<-function(q_map, r_map, alpha, gamma, min_episode, conv_tol) {
-
-    # initialize three map sets
-    maps1<-list(q_map, r_map)
-    maps2<-maps1
-    maps3<-maps1
-    epsilons<-c(0,0,0)
-
-    # run minimum number of random searches
-    for (ql_iter in 1:min_episode) {
-        print(ql_iter)
-        maps1<-ql_episode(maps1[[1]], maps1[[2]], 0)
-        maps2<-ql_episode(maps2[[1]], maps2[[2]], 0)
-        maps3<-ql_episode(maps3[[1]], maps3[[2]], 0)
-    }
-
-    # get solution paths, ratio estimates and variance estimates
-    soln1<-ql_path_soln(maps1[[1]])
-    soln2<-ql_path_soln(maps2[[1]])
-    soln3<-ql_path_soln(maps3[[1]])
-    ratio1<-ql_path_ratio(maps1[[2]], soln1)
-    ratio2<-ql_path_ratio(maps2[[2]], soln2)
-    ratio3<-ql_path_ratio(maps3[[2]], soln3)
-    var1<-ql_path_var_scaled(maps1[[2]], soln1)
-    var2<-ql_path_var_scaled(maps2[[2]], soln2)
-    var3<-ql_path_var_scaled(maps3[[2]], soln3)
-
-    ## if desired, add convergence criteria based on path identity
-    # path_match<-c(identical(soln1, soln2), identical(soln1, soln3), identical(soln2, soln3))
-    # path_conv<-all(path_match)
-    path_conv<-TRUE
-
-    ## convergence criteria based on ratio estimate similarity
-    ratio_conv_vec<-ratio_converged(ratio1, ratio2, ratio3, var1, var2, var3, conv_tol, chain_sd_mult)
-    ratio_conv<-all(ratio_conv_vec)
-
-    # storage for cost_matches
-    ratio_conv_archive<-array(NA, dim=c((max_episode-min_episode), length(ratio_conv_vec)))
-
-    # set epsilons to a mostly random value
-    epsilons<-c(0.3, 0.3, 0.3)
-
-    while(!(path_conv & ratio_conv)) {
-        ql_iter<-ql_iter+1
-        print(ql_iter)
-
-        # update epsilons based on ratio match only
-        epsilons<-mapply(epsilon_update_cost3, epsilons, ratio_conv_vec)
-        # print(epsilons)
-
-        # run next search episode
-        maps1<-ql_episode(maps1[[1]], maps1[[2]], epsilons[1])
-        maps2<-ql_episode(maps2[[1]], maps2[[2]], epsilons[2])
-        maps3<-ql_episode(maps3[[1]], maps3[[2]], epsilons[3])
-
-        # get new solution paths, ratio estimates and variance estimates
-        soln1<-ql_path_soln(maps1[[1]])
-        soln2<-ql_path_soln(maps2[[1]])
-        soln3<-ql_path_soln(maps3[[1]])
-        ratio1<-ql_path_ratio(maps1[[2]], soln1)
-        ratio2<-ql_path_ratio(maps2[[2]], soln2)
-        ratio3<-ql_path_ratio(maps3[[2]], soln3)
-        var1<-ql_path_var_scaled(maps1[[2]], soln1)
-        var2<-ql_path_var_scaled(maps2[[2]], soln2)
-        var3<-ql_path_var_scaled(maps3[[2]], soln3)
-
-        # update convergence criteria
-        # path_match<-c(identical(soln1, soln2), identical(soln1, soln3), identical(soln2, soln3))
-        # path_conv<-all(path_match)
-        ratio_conv_vec<-ratio_converged(ratio1, ratio2, ratio3, var1, var2, var3, conv_tol, chain_sd_mult)
-        ratio_conv<-all(ratio_conv_vec)
-        
-        ratio_conv_archive[ql_iter-min_episode,]<-ratio_conv_vec
-        print(ratio_conv_vec)
-        print(rbind(c(ratio1, ratio2, ratio3), c(var1, var2, var3)))
-
-
-        if (ql_iter>=max_episode) { break }
-    }
-
-    # record final search results
-    solns<-list(soln1, soln2, soln3)
-    ratios<-c(ratio1, ratio2, ratio3)
-    vars<-c(var1, var2, var3)
-    ratio_conv_archive<-ratio_conv_archive[complete.cases(ratio_conv_archive),]
-    return(list(solns, ratios, vars, ratio_conv_archive))
-}
-
-## ql_episode subroutine represents a single episode of learning
-# each wave explores a single path using one bundle of samples
-# inputs: 
-# r_map : list by indexer (one entry per node), within list, place list by adjacent nodes, place n x 3 matrix for BARratio, varBAR and varvarBAR for each bundle's evaluation
-# q_map : list by indexer (one entry per node), each list entry  is vector of q values to neighbors
-
 ql_episode<-function(q_map, r_map, epsilon) {
+
+    # ql_episode subroutine represents a single episode of learning
+    # each wave explores a single path using one bundle of samples.
 
     # initialize this episode's search agent
     # agent holds info on current path and draws
-    # at end, reprocess agent draws to determine var of each edge
-    # report vars as rewards and update q map
+    # at end, reprocess agent draws to determine ratios and vars, then update maps
 
-    # create path and collect forward trajectory draws
+    ##########
+    # step 1: create path and collect forward trajectory draws
+    ##########
+
     agent_path<-vector()
     agent_path[1]<-indexer_init
     iter_dummy<-0
 
     # create storage for forward draws and weights
-    draws_F<-array(NA, dim=c(num_traj, 1))
+    draws_F<-array(NA, dim=c(num_traj, lattice_size^2, 1))
     weights_F<-array(NA, dim=c(num_traj, 1))
 
-    # initialize values 
-    draws_F[,1]<-rnorm(num_traj, mean=mu0, sd=sig0)
+    # initialize values
+    draws_F[ , , 1]<-generate_ising_hightemp(num_traj, lattice_size)
     weights_F[,1]<-1/num_traj
 
-    while(!identical(agent_path[length(agent_path)], indexer_target)) { #until the agent has reached the target, continue the search
+    while(!identical(agent_path[length(agent_path)], indexer_target)) { # until the agent has reached the target, continue the search
 
         iter_dummy<-iter_dummy+1
 
@@ -174,11 +105,11 @@ ql_episode<-function(q_map, r_map, epsilon) {
         agent_path[iter_dummy+1]<-indexer_next
 
         # propagate particles
-        new_draws<-sapply(draws_F[,iter_dummy],smc_transition, indexer_next)
-        draws_F<-cbind(draws_F, new_draws)
+        new_draws<-t(apply(draws_F[ , , iter_dummy], 1, ising_transition, indexer_next))
+        draws_F<-abind(draws_F, new_draws, along=3)
 
         # calculate particle weights
-        p_weight<-get_p_weight(draws_F[,iter_dummy], weights_F[,iter_dummy], agent_path[iter_dummy], agent_path[iter_dummy+1])
+        p_weight<-get_p_weight(draws_F[ , , iter_dummy], weights_F[,iter_dummy], agent_path[iter_dummy], agent_path[iter_dummy+1])
         weights_F<-cbind(weights_F, p_weight)
 
         # continue particle propagation until path is complete
@@ -187,15 +118,23 @@ ql_episode<-function(q_map, r_map, epsilon) {
     # propagate particles backwards
     draws_R<-array(NA, dim=dim(draws_F))
     weights_R<-array(NA, dim=dim(weights_F))
-    draws_R[,ncol(draws_R)]<-rnorm(num_traj, mean=mu1, sd=sig1)
-    weights_R[,ncol(weights_R)]<-1/num_traj
 
-    for (i in (ncol(draws_R)-1):1) {
-        draws_R[,i]<-sapply(draws_R[,i+1], smc_transition, agent_path[i])
-        weights_R[,i]<-get_p_weight(draws_R[,i+1], weights_R[,i+1], agent_path[i+1], agent_path[i])
+    ######
+    # NOTE: THIS IS PARTICLE INTIALIZATION FOR ONLY UPPER PATH CASE. 
+    # NEED SPECIAL HANDLING FOR BIFURCATED PATH/CASE WHERE PATHS ARE ALLOWED TO HAVE NEGATIVE MAGNETIZATION
+    ######
+    draws_R[ , , dim(draws_F)[3]]<-generate_ising_lowtemp(num_traj, lattice_size, 1)
+    weights_R[, ncol(weights_R)]<-1/num_traj
+
+    for (i in (ncol(weights_R)-1):1) {
+        draws_R[ , , i]<-t(apply(draws_R[, , i+1], 1, ising_transition, agent_path[i]))
+        weights_R[,i]<-get_p_weight(draws_R[ , , i+1], weights_R[, i+1], agent_path[i+1], agent_path[i])
     }
 
-    # process forward and reverse weighted trajectories to obtain ratio and var(ratio) estimates.
+    # process forward and reverse weighted trajectories to obtain ratio and var(ratio) estimates
+    #####
+    # NOTE: IF THIS IS FOR ONLY THE POSITIVE MAGNETIZATION CASE, WE ARE LIKELY MISSING OUT ON 1/2 OF THE TARGET PARTITION FUNCTION
+    #####
     r_map_updates<-process_trajectories(draws_F, draws_R, weights_F, weights_R, agent_path)
 
     # update maps
@@ -231,7 +170,17 @@ q_choice<-function(map, e) {
 }
 
 q_score<-function(q, r, q_prime) {
-    new_qsc<-q + alpha*(r + gamma*q_prime - q)
+    if (q==Inf) { # if the previous q value was undefined (Inf)
+        if (q_prime==Inf) { # if the next step q is also undefined (Inf)
+            new_qsc<-r^2 # set alpha=1 for instant learning, and use current r as best guess for next q
+        } else {
+            new_qsc<-r+gamma*q_prime # otherwise just set alpha=1 for instant learning
+        }
+    } else if (q_prime==Inf) { # if only next step q is undefined
+        new_qsc<- q + alpha*(r^2-q)
+    } else { # if neither is undefined then just go on as normal
+        new_qsc<-q + alpha*(r + gamma*q_prime - q)
+    }
     return(new_qsc)
 }
 
@@ -304,117 +253,6 @@ split_func<-function(x) {
     return(out)
 }
 
-overlap_check<-function(x1, x2, y1, y2) { return(x1<=y2 && y1<=x2) }
 
-epsilon_update_cost<-function(epsilons, cost_match) {
-    epsilon_delta<-0.005
-    if (cost_match[1]) {
-        epsilons[3]<-max(0, epsilons[3]-epsilon_delta)
-        epsilons[1]<-min(1, epsilons[1]+epsilon_delta)
-        epsilons[2]<-min(1, epsilons[2]+epsilon_delta)
-    } else if (cost_match[2]) {
-        epsilons[2]<-max(0, epsilons[2]-epsilon_delta)
-        epsilons[1]<-min(1, epsilons[1]+epsilon_delta)
-        epsilons[3]<-min(1, epsilons[3]+epsilon_delta)
-    } else if (cost_match[3]) {
-        epsilons[1]<-max(0, epsilons[1]-epsilon_delta)
-        epsilons[3]<-min(1, epsilons[3]+epsilon_delta)
-        epsilons[2]<-min(1, epsilons[2]+epsilon_delta)
-    } else {
-        epsilons[1]<-max(0, epsilons[1]-epsilon_delta)
-        epsilons[2]<-max(0, epsilons[2]-epsilon_delta)
-        epsilons[3]<-max(0, epsilons[3]-epsilon_delta)
-    }
-    return(epsilons)
-}
 
-make_interval<-function(ratio, var, mult) {
-    sd<-sqrt(var*ratio^2)
-    return(c(ratio-sd*mult, ratio+sd*mult))
-}
 
-x_in_y<-function(x1, x2, y1, y2) { return(x1>y1 && x2<y2) }
-
-ratio_converged<-function(r1, r2, r3, v1, v2, v3, tol, mult){
-    rvs<-cbind(c(r1, r2, r3), c(v1, v2, v3))
-
-    if (any(is.na(rvs))) { conv_vec<-c(FALSE, FALSE, FALSE) 
-    } else {
-        # calculate composite ratio and tolerance window around it
-        composite_ratio<-weighted.mean(rvs[,1], 1/rvs[,2])
-        composite_interval<-c(composite_ratio*(1-tol), composite_ratio*(1+tol))
-
-        # calculate intervals around each chain's ratio estimate
-        chain_intervals<-t(mapply(make_interval, rvs[,1], rvs[,2], mult))
-
-        # check if chain intervals are contained within composite interval
-        conv_vec<-mapply(x_in_y, chain_intervals[,1], chain_intervals[,2], composite_interval[1], composite_interval[2])
-    }
-    # if all are contained, claim convergence
-    return(conv_vec)
-}
-
-epsilon_update_cost2<-function(epsilon, conv) {
-    epsilon_delta<-0.005
-    if (conv) { 
-        # if chain cost converged, either become more deterministic, or stay the same. favor deterministic move is still relatively random
-        ep_vec<-c(epsilon, min(1, epsilon+epsilon_delta))
-        p_vec<-c(epsilon, 1-epsilon)
-    } else {
-        # if chain not converged, either become more random, or stay the same. favor random move if too deterministic
-        ep_vec<-c(epsilon, max(0.3, epsilon-epsilon_delta))
-        p_vec<-c(1-epsilon, epsilon)
-    }
-    epsilon_new<-sample(ep_vec, 1, prob=p_vec)
-    return(epsilon_new)
-}
-
-epsilon_update_cost3<-function(epsilon, conv) {
-    # to tune this for a different steady state, note:
-    # 0.5 + epsilon_offset = steady value
-    epsilon_offset<-0.3
-    epsilon_delta<-0.005
-    if (conv) { 
-        # if chain cost converged, become more deterministic
-        epsilon_new<-min(1, epsilon+epsilon_delta)
-    } else {
-        # if chain not converged, with prob 1-epsilon progress epsilon according to regular schedule
-        if (runif(1)>(epsilon-epsilon_offset)) { # 1-ep would make steady state 0.5. with this, we make steady state 0.8. encourage more exploitation and less random wandering
-            epsilon_new<-min(1, epsilon+epsilon_delta)
-        } else {
-        # otherwise, if epsilon is high, then knock it down to make more random
-            if (epsilon<=epsilon_offset) { 
-                epsilon_new<-epsilon
-            } else{ 
-                ep_vec<-c(epsilon, max(0.3, epsilon-epsilon_delta))
-                p_vec<-c(1-epsilon+epsilon_offset, epsilon-epsilon_offset)
-                epsilon_new<-sample(ep_vec, 1, prob=p_vec)
-            }      
-        }
-    }
-    return(epsilon_new)
-}
-
-epsilon_update_cost4<-function(epsilon, conv) { # original updater used for normnorm-3chains-01, which held epsilon steady at 0.5 for a long time.
-    epsilon_delta<-0.005
-    if (conv) { 
-        # if chain cost converged, become more deterministic
-        epsilon_new<-min(1, epsilon+epsilon_delta)
-    } else {
-        # if chain not converged, with prob 1-epsilon progress epsilon according to regular schedule
-        if (runif(1)>epsilon) { 
-            epsilon_new<-min(1, epsilon+epsilon_delta)
-        } else {
-        # otherwise, if epsilon is high, then knock it down to make more random
-            ep_vec<-c(epsilon, max(0.3, epsilon-epsilon_delta))
-            p_vec<-c(1-epsilon, epsilon)
-            epsilon_new<-sample(ep_vec, 1, prob=p_vec)
-        } 
-    }
-    return(epsilon_new)
-}
-
-# testing vars
-# epsilon<-0
-# alpha<-0.8
-# gamma<-0.8
