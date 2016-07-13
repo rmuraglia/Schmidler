@@ -29,7 +29,7 @@ print(date())
 switch(Sys.info()[['sysname']],
     Windows = {setwd('D:/work-duke/Schmidler/Q-learning/ising-2d-ferro')},
     Darwin = {setwd('/Users/rmuraglia/GitHub/Schmidler/Q-learning/ising-2d-ferro/')},
-    Linux = {setwd('/dscrhome/rm204/Q-learning/')}
+    Linux = {setwd('/dscrhome/rm204/ising-ql/')}
 )
 
 print('Loading required libraries...')
@@ -44,7 +44,7 @@ if (length(args)==6) { # if appropriate number, use
     move_jump<-as.numeric(args[1])
     beta_numpoints<-as.numeric(args[2])
     magn_numpoints<-as.numeric(args[3])
-    magn_dof<-as.numeric(args[4])
+    magn_dof<-as.logical(args[4])
     num_traj<-as.numeric(args[5])
     num_episode<-as.numeric(args[6])
 } else { # else use following defaults
@@ -54,7 +54,7 @@ if (length(args)==6) { # if appropriate number, use
     magn_numpoints<-5
     magn_dof<-FALSE
     num_traj<-100
-    num_episode<-600
+    num_episode<-300
 }
 
 # move_jump<-1
@@ -99,9 +99,15 @@ source('pcrooks_import.r')
 source('ising_import.r')
 source('ql_algorithm.r')
 
-epsilon_tau<-2
-num_episode<-10
+# epsilon_tau<-2
+# num_episode<-10
 ql_out<-ql_full_history(q_map, r_map, alpha, gamma, epsilon_init, epsilon_tau)
-save.image('ising-fullhist-restrict-TEST.RData')
+
+if (magn_dof) {
+    save.image('ising-fullhist-psearch-TEST.RData')
+} else {
+    save.image('ising-fullhist-restrict-TEST.RData')
+}
+
 
 # tim<-ql_episode(q_map, r_map, epsilon_init)

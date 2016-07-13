@@ -172,12 +172,12 @@ q_choice<-function(map, e) {
 q_score<-function(q, r, q_prime) {
     if (q==Inf) { # if the previous q value was undefined (Inf)
         if (q_prime==Inf) { # if the next step q is also undefined (Inf)
-            new_qsc<-r^2 # set alpha=1 for instant learning, and use current r as best guess for next q
+            new_qsc<-r+r # set alpha=1 for instant learning, and use current r as best guess for next q
         } else {
             new_qsc<-r+gamma*q_prime # otherwise just set alpha=1 for instant learning
         }
     } else if (q_prime==Inf) { # if only next step q is undefined
-        new_qsc<- q + alpha*(r^2-q)
+        new_qsc<- q + alpha*(r+r-q)
     } else { # if neither is undefined then just go on as normal
         new_qsc<-q + alpha*(r + gamma*q_prime - q)
     }
