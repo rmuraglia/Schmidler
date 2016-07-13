@@ -15,6 +15,13 @@ unnorm_dens<-function(x, beta, magn) {
     return(q_dens)
 }
 
+# try using a log density instead for more numerical stability
+log_dens<-function(x, beta, magn) {
+    hamiltonian <- -coupl_energy(x, J) - magn_energy(x, magn)
+    log_out<- -beta*hamiltonian
+    return(log_out)
+}
+
 # spin coupling contribution to energy
 # for each pair of neighboring spins, calculate J*sig_i*sig_j
 coupl_energy<-function(x, J) {
@@ -102,6 +109,8 @@ generate_ising_lowtemp<-function(num_traj, lattice_size, majority_spin) {
 ising_transition<-function(x, indexer_next) {
     prev_config<-x 
     next_state<-as.numeric(unlist(strsplit(indexer_next, split='_')))
+    prev_log<-log_dens(prev_config, next_state[1], next_state[2])
+
     for (i in 1:num_metro_step) { # carry out a given number of metropolis steps per transition
         # select which spin(s) to flip
         flipped<-sample(c(1:lattice_size^2), size=num_spin_flip)
@@ -111,16 +120,20 @@ ising_transition<-function(x, indexer_next) {
         trial_config[flipped]<-trial_config[flipped]*(-1)
 
         # get current density and trial density
-        prev_dens<-unnorm_dens(prev_config, next_state[1], next_state[2])
-        trial_dens<-unnorm_dens(trial_config, next_state[1], next_state[2])
+        # prev_dens<-unnorm_dens(prev_config, next_state[1], next_state[2])
+        # trial_dens<-unnorm_dens(trial_config, next_state[1], next_state[2])
+
+        # log density of trial draw
+        trial_log<-log_dens(trial_config, next_state[1], next_state[2])
 
         # get acceptance probability
-        accept_prob<-min(1, trial_dens/prev_dens)
+        accept_prob<-exp(trial_log-prev_log)
 
         # accept/reject step, update draw?
         prob_draw<-runif(n=1, min=0, max=1)
         if (prob_draw<=accept_prob) {
             prev_config<-trial_config
+            prev_log<-trial_log
         } 
     }
     return(prev_config)

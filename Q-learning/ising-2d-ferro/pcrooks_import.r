@@ -5,9 +5,12 @@
 get_p_weight<-function(x, prev_weight, indexer_prev, indexer_curr) {
     distr_prev<-as.numeric(unlist(strsplit(indexer_prev, split='_')))
     distr_curr<-as.numeric(unlist(strsplit(indexer_curr, split='_')))
-    curr_dens<-apply(x, 1, unnorm_dens, distr_curr[1], distr_curr[2])
-    prev_dens<-apply(x, 1, unnorm_dens, distr_prev[1], distr_prev[2])
-    incr_weights<-curr_dens/prev_dens
+    curr_log<-apply(x, 1, log_dens, distr_curr[1], distr_curr[2])
+    prev_log<-apply(x, 1, log_dens, distr_prev[1], distr_prev[2])
+    # curr_dens<-apply(x, 1, unnorm_dens, distr_curr[1], distr_curr[2])
+    # prev_dens<-apply(x, 1, unnorm_dens, distr_prev[1], distr_prev[2])
+    incr_weights<-exp(curr_log-prev_log)
+    # incr_weights<-curr_dens/prev_dens
     unnorm_weights<-prev_weight*incr_weights
     p_weights<-unnorm_weights/sum(unnorm_weights)
     return(p_weights)
@@ -46,8 +49,10 @@ ratio_estim<-function(curr_samp, next_samp, curr_weight, next_weight, curr_index
     distr_next<-as.numeric(unlist(strsplit(next_indexer, split='_')))
 
     # precompute ratios of unnormalized densities
-    l_curr<-apply(curr_samp, 1, unnorm_dens, distr_next[1], distr_next[2])/apply(curr_samp, 1, unnorm_dens, distr_curr[1], distr_curr[2])
-    l_next<-apply(next_samp, 1, unnorm_dens, distr_next[1], distr_next[2])/apply(next_samp, 1, unnorm_dens, distr_curr[1], distr_curr[2])
+    # l_curr<-apply(curr_samp, 1, unnorm_dens, distr_next[1], distr_next[2])/apply(curr_samp, 1, unnorm_dens, distr_curr[1], distr_curr[2])
+    # l_next<-apply(next_samp, 1, unnorm_dens, distr_next[1], distr_next[2])/apply(next_samp, 1, unnorm_dens, distr_curr[1], distr_curr[2])
+    l_curr<-exp(apply(curr_samp, 1, log_dens, distr_next[1], distr_next[2]) - apply(curr_samp, 1, log_dens, distr_curr[1], distr_curr[2]))
+    l_next<-exp(apply(next_samp, 1, log_dens, distr_next[1], distr_next[2]) - apply(next_samp, 1, log_dens, distr_curr[1], distr_curr[2]))
 
     # precompute sample balance
     s_curr<-length(l_curr)/(length(l_curr) + length(l_next))
@@ -99,8 +104,10 @@ var_estim<-function(curr_samp, next_samp, curr_weight, next_weight, curr_indexer
     distr_next<-as.numeric(unlist(strsplit(next_indexer, split='_')))
 
     # get delta us
-    del_u_curr<--log(apply(curr_samp, 1, unnorm_dens, distr_curr[1], distr_curr[2])) + log(apply(curr_samp,1 , unnorm_dens, distr_next[1], distr_next[2]))
-    del_u_next<--log(apply(next_samp, 1, unnorm_dens, distr_curr[1], distr_curr[2])) + log(apply(next_samp,1 , unnorm_dens, distr_next[1], distr_next[2]))
+    # del_u_curr<--log(apply(curr_samp, 1, unnorm_dens, distr_curr[1], distr_curr[2])) + log(apply(curr_samp,1 , unnorm_dens, distr_next[1], distr_next[2]))
+    # del_u_next<--log(apply(next_samp, 1, unnorm_dens, distr_curr[1], distr_curr[2])) + log(apply(next_samp,1 , unnorm_dens, distr_next[1], distr_next[2]))
+    del_u_curr<--apply(curr_samp, 1, log_dens, distr_curr[1], distr_curr[2]) + apply(curr_samp,1 , log_dens, distr_next[1], distr_next[2])
+    del_u_next<--apply(next_samp, 1, log_dens, distr_curr[1], distr_curr[2]) + apply(next_samp,1 , log_dens, distr_next[1], distr_next[2])
 
     # get free energy and other quantities
     delta_f<--log(r_hat)
