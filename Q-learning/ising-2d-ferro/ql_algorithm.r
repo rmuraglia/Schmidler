@@ -120,10 +120,9 @@ ql_episode<-function(q_map, r_map, epsilon) {
     weights_R<-array(NA, dim=dim(weights_F))
 
     ######
-    # NOTE: THIS IS PARTICLE INTIALIZATION FOR ONLY UPPER PATH CASE. 
-    # NEED SPECIAL HANDLING FOR BIFURCATED PATH/CASE WHERE PATHS ARE ALLOWED TO HAVE NEGATIVE MAGNETIZATION
+    # initialize randomly to mostly spin up or down
     ######
-    draws_R[ , , dim(draws_F)[3]]<-generate_ising_lowtemp(num_traj, lattice_size, 1)
+    draws_R[ , , dim(draws_F)[3]]<-generate_ising_lowtemp(num_traj, lattice_size, sample(c(-1, 1), size=1))
     weights_R[, ncol(weights_R)]<-1/num_traj
 
     for (i in (ncol(weights_R)-1):1) {
