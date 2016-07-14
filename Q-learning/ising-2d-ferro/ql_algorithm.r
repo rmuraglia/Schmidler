@@ -58,7 +58,7 @@ ql_full_history<-function(q_map, r_map, alpha, gamma, epsilon_init, epsilon_tau)
     }
 
     # return full history of summary output
-    return(list(path_solns, path_ratios, path_vars, agent_paths, maps[[2]])) # for testing
+    return(list(path_solns, path_ratios, path_vars, agent_paths, maps[[1]], maps[[2]])) # for testing
     # return(list(path_solns, path_ratios, path_vars))
 }
 

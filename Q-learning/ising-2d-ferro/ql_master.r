@@ -37,7 +37,7 @@ library(abind)
 
 print ('Reading parameters from command line if present...')
 args<-commandArgs(trailingOnly=TRUE)
-if (length(args)==6) { # if appropriate number, use
+if (length(args)==8) { # if appropriate number, use
     # repnum<-as.numeric(args[1])
     # magn_dof<-as.logical(args[2])
     # composite_tol<-as.numeric(args[3])
@@ -47,6 +47,8 @@ if (length(args)==6) { # if appropriate number, use
     magn_dof<-as.logical(args[4])
     num_traj<-as.numeric(args[5])
     num_episode<-as.numeric(args[6])
+    num_metro_step<-as.numeric(args[7])
+    rep<-as.numeric(args[8])
 } else { # else use following defaults
     move_jump<-1
     beta_numpoints<-6
@@ -55,6 +57,8 @@ if (length(args)==6) { # if appropriate number, use
     magn_dof<-FALSE
     num_traj<-100
     num_episode<-300
+    num_metro_step<-25
+    rep<-50
 }
 
 # move_jump<-1
@@ -76,7 +80,7 @@ magn_max_abs<-10
 lattice_size<-10
 
 # params for sequential sampling 
-num_metro_step<-25
+# num_metro_step<-25
 num_spin_flip<-1
 
 # params for all types of QL search
@@ -104,9 +108,9 @@ source('ql_algorithm.r')
 ql_out<-ql_full_history(q_map, r_map, alpha, gamma, epsilon_init, epsilon_tau)
 
 if (magn_dof) {
-    save.image('ising-fullhist-psearch-TEST.RData')
+    save.image(paste('ising-fullhist-psearch-TEST', sprintf('%03d', rep), '.RData', sep=''))
 } else {
-    save.image('ising-fullhist-restrict-TEST.RData')
+    save.image(paste('ising-fullhist-restrict-TEST', sprintf('%03d', rep), '.RData', sep=''))
 }
 
 
