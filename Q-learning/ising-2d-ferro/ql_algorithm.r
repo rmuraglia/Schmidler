@@ -9,6 +9,7 @@ ql_full_history<-function(q_map, r_map, alpha, gamma, epsilon_init, epsilon_tau)
     maps<-list(q_map, r_map)
     delta_epsilon<-1/epsilon_tau
     path_solns<-vector('list', length=num_episode)
+    agent_paths<-path_solns # for testing
     path_ratios<-rep(NA, length.out=num_episode)
     path_vars<-rep(NA, length.out=num_episode)
 
@@ -29,6 +30,7 @@ ql_full_history<-function(q_map, r_map, alpha, gamma, epsilon_init, epsilon_tau)
         path_soln_mat<-t(sapply(path_soln_temp, split_func))
         if (!any(is.na(path_soln_mat))) { colnames(path_soln_mat)<-c('beta', 'magnetic_field') }
         path_solns[[i]]<-path_soln_mat
+        agent_paths[[i]]<-maps[[3]] # for testing
         path_ratios[i]<-path_ratio_temp
         path_vars[i]<-path_var_temp
     }
@@ -50,12 +52,14 @@ ql_full_history<-function(q_map, r_map, alpha, gamma, epsilon_init, epsilon_tau)
         path_soln_mat<-t(sapply(path_soln_temp, split_func))
         if (!any(is.na(path_soln_mat))) { colnames(path_soln_mat)<-c('beta', 'magnetic_field') }
         path_solns[[i]]<-path_soln_mat
+        agent_paths[[i]]<-maps[[3]] # for testing
         path_ratios[i]<-path_ratio_temp
         path_vars[i]<-path_var_temp
     }
 
     # return full history of summary output
-    return(list(path_solns, path_ratios, path_vars))
+    return(list(path_solns, path_ratios, path_vars, agent_paths, maps[[2]])) # for testing
+    # return(list(path_solns, path_ratios, path_vars))
 }
 
 ql_episode<-function(q_map, r_map, epsilon) {
@@ -173,7 +177,8 @@ ql_episode<-function(q_map, r_map, epsilon) {
         q_prime_val<-min(as.numeric(q_map[[q_prime_ind]][,2]))
         q_map[[index_current]][index_next, 2]<-q_score(q_entry, r_entry, q_prime_val)
     }
-    return(list(q_map, r_map))
+    return(list(q_map, r_map, agent_path)) # for testing
+    # return(list(q_map, r_map))
 }
 
 # epsilon-decision making policy
