@@ -104,13 +104,22 @@ ql_episode<-function(q_map, r_map, epsilon) {
         # add choice to path
         agent_path[iter_dummy+1]<-indexer_next
 
-        # propagate particles
-        new_draws<-t(apply(draws_F[ , , iter_dummy], 1, ising_transition, indexer_next))
-        draws_F<-abind(draws_F, new_draws, along=3)
-
         # calculate particle weights
         p_weight<-get_p_weight(draws_F[ , , iter_dummy], weights_F[,iter_dummy], agent_path[iter_dummy], agent_path[iter_dummy+1])
-        weights_F<-cbind(weights_F, p_weight)
+
+        # if needed, resample before propagation
+        ESS<-1/sum(p_weight^2)
+        if (ESS<num_traj/2) {
+            resample_inds<-sample(c(1:num_traj), size=num_traj, replace=T, prob=p_weight)
+            resample<-draws_F[resample_inds, , iter_dummy]
+            new_draws<-t(apply(resample, 1, ising_transition, indexer_next))
+            draws_F<-abind(draws_F, new_draws, along=3)
+            weights_F<-cbind(weights_F, rep(1/num_traj, length.out=num_traj))
+        } else {
+            new_draws<-t(apply(draws_F[ , , iter_dummy], 1, ising_transition, indexer_next))
+            draws_F<-abind(draws_F, new_draws, along=3)
+            weights_F<-cbind(weights_F, p_weight)
+        }
 
         # continue particle propagation until path is complete
     }
@@ -126,8 +135,17 @@ ql_episode<-function(q_map, r_map, epsilon) {
     weights_R[, ncol(weights_R)]<-1/num_traj
 
     for (i in (ncol(weights_R)-1):1) {
-        draws_R[ , , i]<-t(apply(draws_R[, , i+1], 1, ising_transition, agent_path[i]))
-        weights_R[,i]<-get_p_weight(draws_R[ , , i+1], weights_R[, i+1], agent_path[i+1], agent_path[i])
+
+        ESS<-1/sum(weights_R[,i+1]^2)
+        if (ESS<num_traj/2) {
+            resample_inds<-sample(c(1:num_traj), size=num_traj, replace=T, prob=weights_R[,i+1])
+            resample<-draws_R[resample_inds, , i+1]
+            draws_R[ , ,i]<-t(apply(resample, 1, ising_transition, agent_path[i]))
+            weights_R[,i]<-rep(1/num_traj, length.out=num_traj)
+        } else{
+           draws_R[ , , i]<-t(apply(draws_R[, , i+1], 1, ising_transition, agent_path[i]))
+            weights_R[,i]<-get_p_weight(draws_R[ , , i+1], weights_R[, i+1], agent_path[i+1], agent_path[i]) 
+        }
     }
 
     # process forward and reverse weighted trajectories to obtain ratio and var(ratio) estimates
