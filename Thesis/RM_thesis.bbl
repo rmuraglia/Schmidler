@@ -1,0 +1,248 @@
+\begin{thebibliography}{10}
+
+\bibitem{shirts2007alchemical}
+Michael~R Shirts, David~L Mobley, and John~D Chodera.
+\newblock Alchemical free energy calculations: ready for prime time.
+\newblock {\em Annual Reports in Computational Chemistry}, 3:41--59, 2007.
+
+\bibitem{pohorille2010good}
+Andrew Pohorille, Christopher Jarzynski, and Christophe Chipot.
+\newblock Good practices in free-energy calculations.
+\newblock {\em The Journal of Physical Chemistry B}, 114(32):10235--10253,
+  2010.
+
+\bibitem{crooks2000path}
+Gavin~E Crooks.
+\newblock Path-ensemble averages in systems driven far from equilibrium.
+\newblock {\em Physical review E}, 61(3):2361, 2000.
+
+\bibitem{jarzynski1997nonequilibrium1}
+Christopher Jarzynski.
+\newblock Nonequilibrium equality for free energy differences.
+\newblock {\em Physical Review Letters}, 78(14):2690, 1997.
+
+\bibitem{del2006sequential}
+Pierre Del~Moral, Arnaud Doucet, and Ajay Jasra.
+\newblock Sequential {M}onte {C}arlo samplers.
+\newblock {\em Journal of the Royal Statistical Society: Series B (Statistical
+  Methodology)}, 68(3):411--436, 2006.
+
+\bibitem{cappe2007overview}
+Olivier Capp{\'e}, Simon~J Godsill, and Eric Moulines.
+\newblock An overview of existing methods and recent advances in sequential
+  {M}onte {C}arlo.
+\newblock {\em Proceedings of the IEEE}, 95(5):899--924, 2007.
+
+\bibitem{watkins1992q}
+Christopher~JCH Watkins and Peter Dayan.
+\newblock Q-learning.
+\newblock {\em Machine learning}, 8(3-4):279--292, 1992.
+
+\bibitem{christ2010basic}
+Clara~D Christ, Alan~E Mark, and Wilfred~F van Gunsteren.
+\newblock Basic ingredients of free energy calculations: a review.
+\newblock {\em Journal of computational chemistry}, 31(8):1569--1582, 2010.
+
+\bibitem{vandivort2008long}
+K~Vandivort, JC~Phillips, E~Villa, PL~Freddolino, J~Gumbart, LG~Trabuco,
+  DE~Chandler, J~Hsin, CB~Harrison, L~Kale, et~al.
+\newblock Long time and large size molecular dynamics simulations made feasible
+  through new {T}era{G}rid hardware and software.
+\newblock In {\em Proceedings of the 2008 TeraGrid Conference}, 2008.
+
+\bibitem{salomon2013routine}
+Romelia Salomon-Ferrer, Andreas~W Götz, Duncan Poole, Scott Le~Grand, and
+  Ross~C Walker.
+\newblock Routine microsecond molecular dynamics simulations with {A}mber on
+  {GPU}s. 2. {E}xplicit solvent particle mesh {E}wald.
+\newblock {\em Journal of Chemical Theory and Computation}, 9(9):3878--3888,
+  2013.
+
+\bibitem{harvey2012high}
+Matthew~J Harvey and Gianni De~Fabritiis.
+\newblock High-throughput molecular dynamics: the powerful new tool for drug
+  discovery.
+\newblock {\em Drug discovery today}, 17(19):1059--1062, 2012.
+
+\bibitem{durrant2011molecular}
+Jacob~D Durrant and J~Andrew McCammon.
+\newblock Molecular dynamics simulations and drug discovery.
+\newblock {\em BMC biology}, 9(1):71, 2011.
+
+\bibitem{bennett1976efficient}
+Charles~H Bennett.
+\newblock Efficient estimation of free energy differences from {M}onte {C}arlo
+  data.
+\newblock {\em Journal of Computational Physics}, 22(2):245--268, 1976.
+
+\bibitem{shirts2003equilibrium}
+Michael~R Shirts, Eric Bair, Giles Hooker, and Vijay~S Pande.
+\newblock Equilibrium free energies from nonequilibrium measurements using
+  maximum-likelihood methods.
+\newblock {\em Physical review letters}, 91(14):140601, 2003.
+
+\bibitem{shirts2008statistically}
+Michael~R Shirts and John~D Chodera.
+\newblock Statistically optimal analysis of samples from multiple equilibrium
+  states.
+\newblock {\em The Journal of chemical physics}, 129(12):124105, 2008.
+
+\bibitem{shirts2005comparison}
+Michael~R Shirts and Vijay~S Pande.
+\newblock Comparison of efficiency and bias of free energies computed by
+  exponential averaging, the {B}ennett acceptance ratio, and thermodynamic
+  integration.
+\newblock {\em The Journal of chemical physics}, 122(14):144107, 2005.
+
+\bibitem{meng2002warp}
+Xiao-Li Meng and Stephen Schilling.
+\newblock Warp bridge sampling.
+\newblock {\em Journal of Computational and Graphical Statistics},
+  11(3):552--586, 2002.
+
+\bibitem{gelman1998simulating}
+Andrew Gelman and Xiao-Li Meng.
+\newblock Simulating normalizing constants: From importance sampling to bridge
+  sampling to path sampling.
+\newblock {\em Statistical science}, pages 163--185, 1998.
+
+\bibitem{meng1996simulating}
+Xiao-Li Meng and Wing~Hung Wong.
+\newblock Simulating ratios of normalizing constants via a simple identity: a
+  theoretical exploration.
+\newblock {\em Statistica Sinica}, 6(4):831--860, 1996.
+
+\bibitem{wu2005phase1}
+Di~Wu and David~A Kofke.
+\newblock Phase-space overlap measures. {I}. {F}ail-safe bias detection in free
+  energies calculated by molecular simulation.
+\newblock {\em The Journal of chemical physics}, 123(5):054103, 2005.
+
+\bibitem{wu2005phase2}
+Di~Wu and David~A Kofke.
+\newblock Phase-space overlap measures. {II}. {D}esign and implementation of
+  staging methods for free-energy calculations.
+\newblock {\em The Journal of chemical physics}, 123(8):084109, 2005.
+
+\bibitem{pham2011identifying}
+Tri~T Pham and Michael~R Shirts.
+\newblock Identifying low variance pathways for free energy calculations of
+  molecular transformations in solution phase.
+\newblock {\em The Journal of chemical physics}, 135(3):034114, 2011.
+
+\bibitem{lu1999optimal}
+Nandou Lu and David~A Kofke.
+\newblock Optimal intermediates in staged free energy calculations.
+\newblock {\em The Journal of chemical physics}, 111(10):4414--4423, 1999.
+
+\bibitem{blondel2004ensemble}
+Arnaud Blondel.
+\newblock Ensemble variance in free energy calculations by thermodynamic
+  integration: theory, optimal “alchemical” path, and practical solutions.
+\newblock {\em Journal of computational chemistry}, 25(7):985--993, 2004.
+
+\bibitem{resat1993studies}
+Haluk Resat and Mihaly Mezei.
+\newblock Studies on free energy calculations. {I}. {T}hermodynamic integration
+  using a polynomial path.
+\newblock {\em The Journal of chemical physics}, 99(8):6052--6061, 1993.
+
+\bibitem{AMBER14manual}
+{\em AMBER 14 reference manual}, 2014.
+
+\bibitem{pearlman1989new}
+David~A Pearlman and Peter~A Kollman.
+\newblock A new method for carrying out free energy perturbation calculations:
+  dynamically modified windows.
+\newblock {\em The Journal of Chemical Physics}, 90(4):2460--2470, 1989.
+
+\bibitem{jiang2010free}
+Wei Jiang and Beno{\^\i}t Roux.
+\newblock Free energy perturbation hamiltonian replica-exchange molecular
+  dynamics ({FEP}/{H}-{REMD}) for absolute ligand binding free energy
+  calculations.
+\newblock {\em Journal of chemical theory and computation}, 6(9):2559--2565,
+  2010.
+
+\bibitem{darve2008adaptive}
+Eric Darve, David Rodr{\'\i}guez-G{\'o}mez, and Andrew Pohorille.
+\newblock Adaptive biasing force method for scalar and vector free energy
+  calculations.
+\newblock {\em The Journal of chemical physics}, 128(14):144120, 2008.
+
+\bibitem{sugita2000multidimensional}
+Yuji Sugita, Akio Kitao, and Yuko Okamoto.
+\newblock Multidimensional replica-exchange method for free-energy
+  calculations.
+\newblock {\em The Journal of Chemical Physics}, 113(15):6042--6051, 2000.
+
+\bibitem{dijkstra1959note}
+Edsger~W Dijkstra.
+\newblock A note on two problems in connexion with graphs.
+\newblock {\em Numerische mathematik}, 1(1):269--271, 1959.
+
+\bibitem{neal2001annealed}
+Radford~M Neal.
+\newblock Annealed importance sampling.
+\newblock {\em Statistics and Computing}, 11(2):125--139, 2001.
+
+\bibitem{zwanzig1954high}
+Robert~W Zwanzig.
+\newblock High-temperature equation of state by a perturbation method. i.
+  nonpolar gases.
+\newblock {\em The Journal of Chemical Physics}, 22(8):1420--1426, 1954.
+
+\bibitem{murray2012gpu}
+Lawrence Murray.
+\newblock Gpu acceleration of the particle filter: the metropolis resampler.
+\newblock {\em arXiv preprint arXiv:1202.6163}, 2012.
+
+\bibitem{metropolis1953equation}
+Nicholas Metropolis, Arianna~W Rosenbluth, Marshall~N Rosenbluth, Augusta~H
+  Teller, and Edward Teller.
+\newblock Equation of state calculations by fast computing machines.
+\newblock {\em The journal of chemical physics}, 21(6):1087--1092, 1953.
+
+\bibitem{tokic2011value}
+Michel Tokic and G{\"u}nther Palm.
+\newblock Value-difference based exploration: adaptive control between
+  epsilon-greedy and softmax.
+\newblock In {\em KI 2011: Advances in Artificial Intelligence}, pages
+  335--346. Springer, 2011.
+
+\bibitem{scott2010modern}
+Steven~L Scott.
+\newblock A modern {B}ayesian look at the multi-armed bandit.
+\newblock {\em Applied Stochastic Models in Business and Industry},
+  26(6):639--658, 2010.
+
+\bibitem{vermorel2005multi}
+Joannes Vermorel and Mehryar Mohri.
+\newblock Multi-armed bandit algorithms and empirical evaluation.
+\newblock In {\em Machine Learning: ECML 2005}, pages 437--448. Springer, 2005.
+
+\bibitem{duane1987hybrid}
+Simon Duane, Anthony~D Kennedy, Brian~J Pendleton, and Duncan Roweth.
+\newblock Hybrid monte carlo.
+\newblock {\em Physics letters B}, 195(2):216--222, 1987.
+
+\bibitem{mora2012transition}
+Thierry Mora, Aleksandra~M Walczak, and Francesco Zamponi.
+\newblock Transition path sampling algorithm for discrete many-body systems.
+\newblock {\em Physical Review E}, 85(3):036710, 2012.
+
+\bibitem{paliwal2011benchmark}
+Himanshu Paliwal and Michael~R Shirts.
+\newblock A benchmark test set for alchemical free energy transformations and
+  its use to quantify error in common free energy methods.
+\newblock {\em Journal of Chemical Theory and Computation}, 7(12):4115--4134,
+  2011.
+
+\bibitem{boyce2009predicting}
+Sarah~E Boyce, David~L Mobley, Gabriel~J Rocklin, Alan~P Graves, Ken~A Dill,
+  and Brian~K Shoichet.
+\newblock Predicting ligand binding affinity with alchemical free energy
+  methods in a polar model binding site.
+\newblock {\em Journal of molecular biology}, 394(4):747--763, 2009.
+
+\end{thebibliography}

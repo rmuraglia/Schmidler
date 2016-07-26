@@ -1,0 +1,25 @@
+\BOOKMARK [0][-]{chapter*.1}{Abstract}{}% 1
+\BOOKMARK [0][-]{chapter*.3}{List of Figures}{}% 2
+\BOOKMARK [0][-]{chapter.1}{1 Introduction}{}% 3
+\BOOKMARK [0][-]{chapter.2}{2 Background}{}% 4
+\BOOKMARK [1][-]{section.2.1}{2.1 Free energy calculations}{chapter.2}% 5
+\BOOKMARK [1][-]{section.2.2}{2.2 Bridge sampling, the BAR estimator and beyond}{chapter.2}% 6
+\BOOKMARK [1][-]{section.2.3}{2.3 Alchemical intermediate selection}{chapter.2}% 7
+\BOOKMARK [0][-]{chapter.3}{3 Optimal Path Determination by Exhaustive Search}{}% 8
+\BOOKMARK [1][-]{section.3.1}{3.1 Defining an augmented \040space}{chapter.3}% 9
+\BOOKMARK [1][-]{section.3.2}{3.2 Revisiting Gelman and Meng in discrete state spaces}{chapter.3}% 10
+\BOOKMARK [1][-]{section.3.3}{3.3 Moving towards free energy calculations}{chapter.3}% 11
+\BOOKMARK [2][-]{subsection.3.3.1}{3.3.1 A proper distance metric - varBAR}{section.3.3}% 12
+\BOOKMARK [2][-]{subsection.3.3.2}{3.3.2 Cost adjusted paths}{section.3.3}% 13
+\BOOKMARK [1][-]{section.3.4}{3.4 Scalability of Dijkstra's algorithm to molecular systems}{chapter.3}% 14
+\BOOKMARK [0][-]{chapter.4}{4 Sequential Monte Carlo for Free Energy Estimation}{}% 15
+\BOOKMARK [1][-]{section.4.1}{4.1 Combining bridge sampling and SMC}{chapter.4}% 16
+\BOOKMARK [1][-]{section.4.2}{4.2 SMC in the augmented \(, T\) space}{chapter.4}% 17
+\BOOKMARK [1][-]{section.4.3}{4.3 pCrooks: a pairwise decomposable CFT}{chapter.4}% 18
+\BOOKMARK [0][-]{chapter.5}{5 Path Selection via Reinforcement Learning}{}% 19
+\BOOKMARK [1][-]{section.5.1}{5.1 SMC and the multi-armed bandit}{chapter.5}% 20
+\BOOKMARK [1][-]{section.5.2}{5.2 Full grid optimization with Q-learning}{chapter.5}% 21
+\BOOKMARK [2][-]{subsection.5.2.1}{5.2.1 Fixed duration Q-learning}{section.5.2}% 22
+\BOOKMARK [2][-]{subsection.5.2.2}{5.2.2 Q-learning convergence}{section.5.2}% 23
+\BOOKMARK [0][-]{chapter.6}{6 Discussion}{}% 24
+\BOOKMARK [0][-]{chapter.6}{Bibliography}{}% 25

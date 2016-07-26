@@ -1,0 +1,13 @@
+\abstract
+
+Free energy calculations are a computational method for determining thermodynamic quantities, such as free energies of binding, via simulation. 
+Currently, due to computational and algorithmic limitations, free energy calculations are limited in scope.
+% Efficient free energy calculations would serve as an effective tool for computational molecular design, obviating the need for a significant amount of costly and time consuming synthesis and experiment.
+In this work, we propose two methods for improving the efficiency of free energy calculations.
+First, we expand the state space of alchemical intermediates, and show that this expansion enables us to calculate free energies along lower variance paths.
+We use Q-learning, a reinforcement learning technique, to discover and optimize paths at low computational cost.
+Second, we reduce the cost of sampling along a given path by using sequential Monte Carlo samplers.
+We develop a new free energy estimator, pCrooks (pairwise Crooks), a variant on the Crooks fluctuation theorem (CFT), which enables decomposition of the variance of the free energy estimate for discrete paths, while retaining beneficial characteristics of CFT.
+Combining these two advancements, we show that for some test models, optimal expanded-space paths have a nearly 80\% reduction in variance relative to the standard path.
+Additionally, our free energy estimator converges at a more consistent rate and on average 1.8 times faster when we enable path searching, even when the cost of path discovery and refinement is considered.
+

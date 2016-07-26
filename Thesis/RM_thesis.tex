@@ -1,0 +1,186 @@
+\documentclass[MS]{dukedissertation}
+%\documentclass[economy,twoside,bind]{dukedissertation}
+% Use the second for a single-spaced copy suitable for duplex printing
+% and binding.
+
+% Other useful options (there are more options documented in Chapter 2):
+%  * draft -- don't actually include images, print a black bar on overful
+%             hboxes
+%  * MS    -- Format for a Master's Thesis.  No UMI abstract page, some 
+%             textual changes to title page.  
+
+
+% Useful packages for dissertation writing:
+\usepackage{amsmath, amssymb, amsfonts, amsthm}
+\usepackage{graphicx}
+\usepackage[super, sort&compress, comma]{natbib}
+\usepackage{color}
+\usepackage{bm}
+\usepackage{subfigure}
+\usepackage{graphicx}
+\usepackage{mathabx}
+\usepackage{multirow}
+\usepackage{setspace}
+\usepackage{siunitx}
+% \usepackage{cite}  % If you include this, hyperlink cites will
+                     % break.  It's nice to use this package if your bibstyle
+							% sorts entries by order-of-use, rather than
+							% alphabetically (as plain does).
+							
+%Theorem, Lemma, etc. environments
+\newtheorem{theorem}{Theorem}%[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{result}[theorem]{Result}
+
+% Personal commands and abbreviations.
+%Define and personal commands here
+
+%Graphics Path to find your pictures
+\graphicspath{{./Figures/}}
+
+
+%-----------------------------------------------------------------------------%
+% PREAMBLE 
+%-----------------------------------------------------------------------------%
+\author{Ryan Muraglia}
+\title{Path Optimization in Free Energy Calculations}
+\supervisor{Scott Schmidler}
+\department{Computational Biology \& Bioinformatics} % Appears as Program in \department
+% Declare dissertation subject used on UMI abstract page.  List of
+% categories: http://dissertations.umi.com/duke/subject_categories.html
+% \subject{Bioinformatics (0715)}
+
+\date{2016} % Anything but the year is ignored.
+
+% Copyright text.  If undefined, default is 'All rights reserved'
+% (Example sets the text to a hyperlinked Creative Commons Licence)
+\copyrighttext{ All rights reserved except the rights granted by the\\
+   \href{http://creativecommons.org/licenses/by-nc/3.0/us/}
+        {Creative Commons Attribution-Noncommercial License}
+}
+
+% Committee Members other than supervisor.  No more than five beyond the
+% supervisor allowed.
+\member{Patrick Charbonneau}
+\member{Paul Magwene}
+% \member{[External Committee Member]}
+%-----------------------------------------------------------------------------%
+
+
+%-----------------------------------------------------------------------------%
+% HYPERREF: plain black hypertext references for ref's and cite's.
+%-----------------------------------------------------------------------------%
+% doesn't work with math expressions (\lambda) in section titles
+\usepackage[pdftex, pdfusetitle, plainpages=false, 
+				bookmarks, bookmarksnumbered,
+				colorlinks, linkcolor=black, citecolor=black,
+	         filecolor=black, urlcolor=black]
+				{hyperref}
+
+\begin{document}
+
+%-----------------------------------------------------------------------------%
+% TITLE PAGE -- provides UMI abstract title page & copyright if appropriate
+%-----------------------------------------------------------------------------%
+\maketitle
+
+%-----------------------------------------------------------------------------%
+% ABSTRACT -- included file should start with '\abstract'.
+%-----------------------------------------------------------------------------%
+\include{{./Abstract/abstract}}
+
+
+%-----------------------------------------------------------------------------%
+% FRONTMATTER -- ToC is required, LoT and LoF are required if you have any
+% tables or figures, respectively. List of Abbreviations and Symbols is 
+% optional.
+%-----------------------------------------------------------------------------%
+\tableofcontents % Automatically generated
+% \listoftables	% If you have any tables, automatically generated
+\listoffigures	% If you have any figures, automatically generated
+% \include{{./Abbreviations/listofabbr}} % List of Abbreviations. Start file with '\abbreviations'
+
+%-----------------------------------------------------------------------------%
+% ACKNOWLEDGEMENTS -- included file should start with '\acknowledgements'
+%-----------------------------------------------------------------------------%
+% \include{{./Acknowledgements/acknowledgements}}
+
+%==============================================================================
+%-----------------------------------------------------------------------------%
+%
+% MAIN BODY OF PAPER
+%
+%
+%-----------------------------------------------------------------------------%
+
+%%% OUTLINE %%%%%
+% Intro: Free energy calculations are hard, and we need to make them more efficient
+% Speed up option 1: Better Paths Exist (exhaustive search)
+    % Idea comes from Gelman and Meng - replicate their result with totvar dist (prelim fig2)
+    % is this a general trend? Show with unibi (prelim fig 3)
+    % does this still work when using our target quantity (varBAR?) (prelim slides 20 and 21)
+    % Problems with these paths: they do not account for edge costs/they are not equal computation comparisons (extra slides 5 and 6)
+    % kshortest path makes fair comparisons on a per sample basis (kshortest and pathsearch-exhaustive)
+    % we've shown that path optimization can be useful & extra degrees of freedom can reduce cost/variance
+% Speed up option 2: Sequential samplers (cost per sample decrease)
+    % in prev examples, equil sampling requires full sim at each step. Sequential samplers enable reduction of cost, only needing full sim at start and end and propagating with nonequilibrium moves
+    % developed sBAR - bridge sampling merged with seqsam by way of resampling. This improves on AIS (panel AB phrma fig 2)
+    % sequential samplers are sensitive to path choice (slide 26), and we are able to select between predefined paths (panel C phrma fig 2)
+    % but both of these methods can struggle with very little overlap/shape between target distributions. crooks is a sequential method that works (Seqv03/tdistn/init.pdf)
+    % crooks is incompatible with full grid optimization, and we cannot assume a known form for good paths. for full grid optimization, we need an edge-decomposable method. we developed pcrooks, which fixes sbar's problems (seqv03/pcrooks/)
+% Path discovery and optimization with chepa sequential estimators
+    % previously seen that we can optimize between paths with bandit type methods (panel C phrma fig 2)
+    % for full grid optimization without predefined paths needs path discovery and optimization algorithms
+    % first attempt is ant path, but it had issues. sensistive to initial conditions and random effects (prelim fig 5)
+    % second attempt is Q-learning, which works.
+
+\include{Introduction/introduction}
+\include{Background/background}
+\include{Results1/pathsearch}
+\include{Results2/smc}
+\include{Results3/ql}
+\include{Discussion/discussion}
+
+% \include{{./Chapter1/introduction}}
+% \include{{./Chapter2/guide-notes}} % A regular chapter, starts with '\chapter{Title}'
+% \include{{./Chapter3/chRegularLook}}
+% \include{{./Chapter4/chLorem}}
+% \include{{./Chapter5/chLorem2}}
+%==============================================================================
+
+%-----------------------------------------------------------------------------%
+% APPENDICES -- OPTIONAL. These are just chapters enumerated by Appendix A,
+%                Appendix B, Appendix C...
+%-----------------------------------------------------------------------------%
+% \appendix
+% \include{{./Appendix1/chLorem3}} % Start with '\chapter{Title}'
+%You can always add more appendices here if you want
+
+%-----------------------------------------------------------------------------%
+% BIBLIOGRAPHY -- uncomment \nocite{*} to include items in 'mybib.bib' file
+% that aren't cited in the text.  Change the style to match your
+% discipline's standards.  Of course, if your bibliography file isn't called
+% 'mybib.bib' you might want to change that here too :)
+%-----------------------------------------------------------------------------%
+% \nocite{*} %- if you use this it will put EVERYTHING in your .bib file into the references even if you don't cite it in the text
+\bibliographystyle{unsrt} %Formats bibliography
+% \bibliographystyle{./Bibliography/jasa}
+\cleardoublepage
+\normalbaselines %Fixes spacing of bibliography
+\addcontentsline{toc}{chapter}{Bibliography} %adds Bibliography to your table of contents
+\bibliography{./Bibliography/prelimrefs}
+% \nocite{durrant2011molecular}
+
+% \bibliography{./Bibliography/References} %your bibliography file - change the path if needed
+%-----------------------------------------------------------------------------%
+
+%-----------------------------------------------------------------------------%
+% BIOGRAPHY -- Start file with '\biography'.  Mandatory for Ph.D.
+%-----------------------------------------------------------------------------%
+% \include{{./Biography/biography}}
+
+%-----------------------------------------------------------------------------
+% You're done :)
+\end{document}

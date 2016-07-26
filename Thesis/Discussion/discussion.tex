@@ -1,0 +1,29 @@
+% discussion.tex
+
+\chapter{Discussion}
+
+Multivariate representations of state spaces have enjoyed great success for sampling, both in a molecular dynamics context with replica-exchange molecular dynamics\cite{sugita2000multidimensional}, and in a statistical context with hybrid Monte Carlo\cite{duane1987hybrid}.
+In this work, we have motivated an analogous extension to free energy calculations.
+Inspired by the work of Gelman and Meng\cite{gelman1998simulating}, we showed that the addition of a temperature parameter to the $\lambda$ scaling alchemical generation scheme allows for the creation of new, reduced variance alchemical paths.
+Furthermore, we found that Q-learning\cite{watkins1992q}, a reinforcement learning technique, could be successfully adapted for use as an algorithm for simultaneous path optimization and free energy estimation.
+
+In parallel work, we expanded on the work of Jarzynski\cite{jarzynski1997nonequilibrium1} and Crooks\cite{crooks2000path} to develop a new nonequilibrium sampler and free energy calculation method, which we call pCrooks. 
+pCrooks is fundamentally a bridge sampling method, like CFT, but unlike CFT, pCrooks provides information on the variance for each pair of adjacent states in an alchemical path, making it a method that synergizes well with path optimization algorithms. 
+
+This document serves as a proof of concept for these methods.
+For simple models, where exhaustive or analytical methods are feasible, we determined reference values against which to test our methods, and showed that we were able to efficiently recover these solutions with our methodology.
+The combined algorithm with Q-learning for path optimization and pCrooks as a subroutine for sampling and free energy estimation represents the culmination of this work.
+In a head to head comparison, our path optimizing Q-learning algorithm was able to converge on a free energy estimate at significantly lower computational cost than the fixed path alternative.
+
+This result is notable because it demonstrates the practical applicability of path optimization in free energy calculations, even in situations where little is known about the energy landscape of the alchemical state space.
+For large molecular systems, where the standard path may run into wide regions of poor overlap, characterized by significant energy barriers, this path optimization may provide a method for avoiding these difficult and problematic transitions.
+
+Moving forward, to fully realize the potential of this method, further testing must be done to determine if the path searching will remain efficient for more complex distributions.
+Reasonable next test cases range from those where a known barrier exists, such as in a ferromagnetic Ising model\cite{mora2012transition}, to well studied examples from the free energy calculation literature, such as the free energy of solvation of methane\cite{paliwal2011benchmark}, or relative binding free energies to T4 lysozyme\cite{boyce2009predicting}.
+
+To deal with the task of sampling high dimensional energy functions, the SMC sampling protocol may require additional improvements. 
+A bidirectional sampling method, like pCrooks, can be combined with a resampling step as is used in seqBAR to alleviate issues related to minimal density overlap.
+Further expansions to the alchemical state space should be considered with caution. 
+As the dimensionality of the state space grows, the overhead associated with Q-learning's path searching will increase rapidly.
+
+In summary, we hope that this work will represent the beginning of a paradigm shift in alchemical intermediate selection away from unprincipled, rule of thumb methods, and towards heuristic methods which take into account the properties of the underlying state space determined by low cost pilot simulations.

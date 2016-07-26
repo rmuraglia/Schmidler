@@ -1,0 +1,19 @@
+\addvspace {10\p@ }
+\addvspace {10\p@ }
+\contentsline {figure}{\numberline {2.1}{\ignorespaces The thermodynamic cycle}}{5}{figure.2.1}
+\contentsline {figure}{\numberline {2.2}{\ignorespaces Gelman and Meng's optimal bridging densities for normal distributions}}{8}{figure.2.2}
+\addvspace {10\p@ }
+\contentsline {figure}{\numberline {3.1}{\ignorespaces Dijkstra search on total variation distance for offset harmonic wells}}{11}{figure.3.1}
+\contentsline {figure}{\numberline {3.2}{\ignorespaces Dijkstra search on total variance distance for the normal to bimodal transformation}}{12}{figure.3.2}
+\contentsline {figure}{\numberline {3.3}{\ignorespaces Dijkstra search on varBAR distance}}{13}{figure.3.3}
+\contentsline {figure}{\numberline {3.4}{\ignorespaces Cost-adjusted Dijkstra search}}{15}{figure.3.4}
+\addvspace {10\p@ }
+\contentsline {figure}{\numberline {4.1}{\ignorespaces Comparison of seqBAR and AIS performance for the normal to bimodal transformation}}{18}{figure.4.1}
+\contentsline {figure}{\numberline {4.2}{\ignorespaces Comparison of AIS paths for offset harmonic wells}}{19}{figure.4.2}
+\contentsline {figure}{\numberline {4.3}{\ignorespaces Comparison of various SMC methods for the normal to Cauchy transformation}}{20}{figure.4.3}
+\addvspace {10\p@ }
+\contentsline {figure}{\numberline {5.1}{\ignorespaces Comparison of three AIS bandit strategies}}{23}{figure.5.1}
+\contentsline {figure}{\numberline {5.2}{\ignorespaces Ratio and variance estimates monitored for fixed duration Q-learning}}{25}{figure.5.2}
+\contentsline {figure}{\numberline {5.3}{\ignorespaces Time evolution of five Q-learning chains}}{26}{figure.5.3}
+\contentsline {figure}{\numberline {5.4}{\ignorespaces Rates of Q-learning convergence}}{28}{figure.5.4}
+\addvspace {10\p@ }

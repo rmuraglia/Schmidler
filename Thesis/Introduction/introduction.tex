@@ -1,0 +1,18 @@
+% introduction.tex
+
+\chapter{Introduction}
+
+The free energy difference between two states is a highly sought after quantity, as it determines their macroscopic behavior. The states can be constructed with flexibility, such that we can obtain information about various phenomena including, but not limited to, protein binding and protein folding. Given current methods and computational resources, free energy calculations for biologically relevant macromolecules remain impractical\cite{shirts2007alchemical, pohorille2010good}.
+
+This impracticality arises due to the heavy cost of sampling conformations for large molecular systems. An ideal sampler for free energy calculations will address the two main challenges current samplers face. First, it must sample the entire configuration space efficiently. The sampler must be able to move across regions of low density to sample a multitude of potential wells. Second, it must collect draws from not only the two systems of interest, but also a series of intermediate distributions which provide a sequence of maximum overlap, connecting the two systems of interest.
+
+The objective of this research is to develop an efficient sampler that will negotiate these challenges, making reliable free energy calculations for macromolecules possible. To meet this goal, three avenues are explored. 
+The first aim of this research is to explore alternative, multivariate parameterizations of the potential function that are suitable for polypeptide systems. I demonstrate this idea by adding a temperature parameter to the classic $\lambda$-scaling intermediate distribution generation scheme. This increased dimensionality makes the sampler more flexible, at the cost of an increase in the difficulty of determining good sequences of intermediate distributions. For several simple models of increasing complexity, an exhaustive graph search over the space of intermediate distributions is used to determine the best set of bridging densities (hereafter, the optimal path), revealing the benefits of this more flexible scheme. 
+
+The second aim of this research is to develop a low cost sampling method compatible with the path searching paradigm introduced in the first aim.
+Crooks\cite{crooks2000path} and Jarzynski\cite{jarzynski1997nonequilibrium1} have previously explored the application of Sequential Monte Carlo (SMC) samplers\cite{del2006sequential, cappe2007overview} to free energy estimation, and generated renewed interest in cost efficient nonequilibrium sampling.
+We present a new sampling and estimation algorithm, pCrooks, a pairwise extension of the Crooks Fluctation Theorem (CFT), which maintains the computational benefits of SMC samplers while providing detailed information on each transition in the alchemical path, allowing for interfacing with path optimization algorithms.
+
+In order for the expanded state space from the first aim to be practical, the cost of finding an improved path must be less than the gains afforded by its use. 
+Computational effort must be allocated between the competing tasks of drawing samples for free energy estimation and drawing samples for path space exploration.
+In the third aim, we apply reinforcement learning techniques, such as Q-learning\cite{watkins1992q}, to efficiently optimize the path without incurring a large sampling burden and computational cost for the exploration phase.

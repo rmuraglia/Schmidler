@@ -1,0 +1,11 @@
+\BOOKMARK [2][]{Outline0.1}{Free energy calculation primer}{}% 1
+\BOOKMARK [2][]{Outline0.2}{Proof of concept}{}% 2
+\BOOKMARK [3][]{Outline0.2.1.11}{Gelman and Meng's result}{Outline0.2}% 3
+\BOOKMARK [3][]{Outline0.2.2.12}{Defining the augmented \040space}{Outline0.2}% 4
+\BOOKMARK [3][]{Outline0.2.3.14}{Exhaustive search}{Outline0.2}% 5
+\BOOKMARK [2][]{Outline0.3}{Sequential Monte Carlo for path traversal}{}% 6
+\BOOKMARK [3][]{Outline0.3.1.21}{Path sensitivity for SMC}{Outline0.3}% 7
+\BOOKMARK [3][]{Outline0.3.2.22}{Path selection and the multi-armed bandit}{Outline0.3}% 8
+\BOOKMARK [2][]{Outline0.4}{Full grid optimization}{}% 9
+\BOOKMARK [3][]{Outline0.4.1.25}{pCrooks - a new estimator}{Outline0.4}% 10
+\BOOKMARK [3][]{Outline0.4.2.29}{Q-learning}{Outline0.4}% 11

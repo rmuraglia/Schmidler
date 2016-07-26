@@ -1,0 +1,25 @@
+\contentsline {chapter}{Abstract}{iv}{chapter*.1}
+\contentsline {chapter}{List of Figures}{vii}{chapter*.3}
+\contentsline {chapter}{\numberline {1}Introduction}{1}{chapter.1}
+\contentsline {chapter}{\numberline {2}Background}{3}{chapter.2}
+\contentsline {section}{\numberline {2.1}Free energy calculations}{3}{section.2.1}
+\contentsline {section}{\numberline {2.2}Bridge sampling, the BAR estimator and beyond}{5}{section.2.2}
+\contentsline {section}{\numberline {2.3}Alchemical intermediate selection}{7}{section.2.3}
+\contentsline {chapter}{\numberline {3}Optimal Path Determination by Exhaustive Search}{9}{chapter.3}
+\contentsline {section}{\numberline {3.1}Defining an augmented $\lambda $ space}{9}{section.3.1}
+\contentsline {section}{\numberline {3.2}Revisiting Gelman and Meng in discrete state spaces}{11}{section.3.2}
+\contentsline {section}{\numberline {3.3}Moving towards free energy calculations}{12}{section.3.3}
+\contentsline {subsection}{\numberline {3.3.1}A proper distance metric - varBAR}{12}{subsection.3.3.1}
+\contentsline {subsection}{\numberline {3.3.2}Cost adjusted paths}{14}{subsection.3.3.2}
+\contentsline {section}{\numberline {3.4}Scalability of Dijkstra's algorithm to molecular systems}{15}{section.3.4}
+\contentsline {chapter}{\numberline {4}Sequential Monte Carlo for Free Energy Estimation}{16}{chapter.4}
+\contentsline {section}{\numberline {4.1}Combining bridge sampling and SMC}{17}{section.4.1}
+\contentsline {section}{\numberline {4.2}SMC in the augmented $(\lambda , T)$ space}{18}{section.4.2}
+\contentsline {section}{\numberline {4.3}pCrooks: a pairwise decomposable CFT}{19}{section.4.3}
+\contentsline {chapter}{\numberline {5}Path Selection via Reinforcement Learning}{22}{chapter.5}
+\contentsline {section}{\numberline {5.1}SMC and the multi-armed bandit}{22}{section.5.1}
+\contentsline {section}{\numberline {5.2}Full grid optimization with Q-learning}{24}{section.5.2}
+\contentsline {subsection}{\numberline {5.2.1}Fixed duration Q-learning}{25}{subsection.5.2.1}
+\contentsline {subsection}{\numberline {5.2.2}Q-learning convergence}{27}{subsection.5.2.2}
+\contentsline {chapter}{\numberline {6}Discussion}{29}{chapter.6}
+\contentsline {chapter}{Bibliography}{32}{chapter.6}
