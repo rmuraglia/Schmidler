@@ -22,4 +22,8 @@
 \BOOKMARK [2][-]{subsection.5.2.1}{5.2.1 Fixed duration Q-learning}{section.5.2}% 22
 \BOOKMARK [2][-]{subsection.5.2.2}{5.2.2 Q-learning convergence}{section.5.2}% 23
 \BOOKMARK [0][-]{chapter.6}{6 Discussion}{}% 24
-\BOOKMARK [0][-]{chapter.6}{Bibliography}{}% 25
+\BOOKMARK [0][-]{appendix.A}{A Detailed Methods}{}% 25
+\BOOKMARK [1][-]{section.A.1}{A.1 Exhaustive search}{appendix.A}% 26
+\BOOKMARK [2][-]{subsection.A.1.1}{A.1.1 Dijkstra's algorithm}{section.A.1}% 27
+\BOOKMARK [2][-]{subsection.A.1.2}{A.1.2 Fixed path length search}{section.A.1}% 28
+\BOOKMARK [0][-]{subsection.A.1.2}{Bibliography}{}% 29

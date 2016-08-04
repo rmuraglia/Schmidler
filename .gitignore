@@ -56,3 +56,7 @@ Q-learning/norm-norm-2d/tol-test.r
 Q-learning/norm-norm-2d/.Rapp.history
 
 Q-learning/ising-2d-ferro/.Rapp.history
+
+*.history
+
+*.sink

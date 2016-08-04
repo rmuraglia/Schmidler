@@ -1,4 +1,4 @@
-PWD /Users/rmuraglia/Dropbox/duke_thesis
+PWD /Users/rmuraglia/GitHub/Schmidler/Thesis
 INPUT /usr/local/texlive/2015/texmf.cnf
 INPUT /usr/local/texlive/2015/texmf-dist/web2c/texmf.cnf
 INPUT /usr/local/texlive/2015/texmf-var/web2c/pdftex/pdflatex.fmt
@@ -125,6 +125,8 @@ INPUT Results3/ql.aux
 INPUT Results3/ql.aux
 INPUT Discussion/discussion.aux
 INPUT Discussion/discussion.aux
+INPUT Appendix/detmeth.aux
+INPUT Appendix/detmeth.aux
 OUTPUT RM_thesis.aux
 INPUT /usr/local/texlive/2015/texmf-dist/tex/context/base/supp-pdf.mkii
 INPUT /usr/local/texlive/2015/texmf-dist/tex/context/base/supp-pdf.mkii
@@ -340,6 +342,9 @@ INPUT ./Figures/ql_conv.png
 OUTPUT Discussion/discussion.aux
 INPUT Discussion/discussion.tex
 INPUT Discussion/discussion.tex
+OUTPUT Appendix/detmeth.aux
+INPUT Appendix/detmeth.tex
+INPUT Appendix/detmeth.tex
 INPUT RM_thesis.bbl
 INPUT RM_thesis.bbl
 INPUT RM_thesis.aux
@@ -357,6 +362,8 @@ INPUT Results3/ql.aux
 INPUT Results3/ql.aux
 INPUT Discussion/discussion.aux
 INPUT Discussion/discussion.aux
+INPUT Appendix/detmeth.aux
+INPUT Appendix/detmeth.aux
 INPUT ./RM_thesis.out
 INPUT ./RM_thesis.out
 INPUT /usr/local/texlive/2015/texmf-dist/fonts/enc/dvips/cm-super/cm-super-ts1.enc
@@ -372,6 +379,7 @@ INPUT /usr/local/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmr6.pfb
 INPUT /usr/local/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb
 INPUT /usr/local/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb
 INPUT /usr/local/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmti12.pfb
+INPUT /usr/local/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt12.pfb
 INPUT /usr/local/texlive/2015/texmf-dist/fonts/type1/public/mathabx-type1/matha12.pfb
 INPUT /usr/local/texlive/2015/texmf-dist/fonts/type1/public/mathabx-type1/matha6.pfb
 INPUT /usr/local/texlive/2015/texmf-dist/fonts/type1/public/mathabx-type1/matha8.pfb

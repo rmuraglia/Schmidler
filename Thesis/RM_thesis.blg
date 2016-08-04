@@ -8,11 +8,12 @@ A level-1 auxiliary file: Results1/pathsearch.aux
 A level-1 auxiliary file: Results2/smc.aux
 A level-1 auxiliary file: Results3/ql.aux
 A level-1 auxiliary file: Discussion/discussion.aux
+A level-1 auxiliary file: Appendix/detmeth.aux
 The style file: unsrt.bst
 Database file #1: ./Bibliography/prelimrefs.bib
 You've used 42 entries,
             1791 wiz_defined-function locations,
-            723 strings with 10977 characters,
+            724 strings with 10997 characters,
 and the built_in function-call counts, 10284 in all, are:
 = -- 964
 > -- 386
