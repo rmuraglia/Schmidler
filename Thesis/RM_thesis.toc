@@ -25,5 +25,5 @@
 \contentsline {chapter}{\numberline {A}Detailed Methods}{32}{appendix.A}
 \contentsline {section}{\numberline {A.1}Exhaustive search}{32}{section.A.1}
 \contentsline {subsection}{\numberline {A.1.1}Dijkstra's algorithm}{32}{subsection.A.1.1}
-\contentsline {subsection}{\numberline {A.1.2}Fixed path length search}{32}{subsection.A.1.2}
-\contentsline {chapter}{Bibliography}{33}{subsection.A.1.2}
+\contentsline {subsection}{\numberline {A.1.2}Fixed path length search}{33}{subsection.A.1.2}
+\contentsline {chapter}{Bibliography}{35}{ALC@unique.31}

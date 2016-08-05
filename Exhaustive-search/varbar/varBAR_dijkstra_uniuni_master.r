@@ -30,7 +30,7 @@ if (length(args)==2) { #if the proper number of params are provided, use them
     move.jump<-as.numeric(args[2])
 } else { #otherwise, use the ones below
     filID<-'varBARasymp-uni-uni-01'
-    move.jump<-1
+    move.jump<-5
 }
 
 # set fixed params

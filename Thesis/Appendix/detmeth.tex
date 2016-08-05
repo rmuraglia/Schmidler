@@ -6,7 +6,6 @@
 
 This appendix contains detailed method descriptions and parameter values required to reproduce the work shown in this thesis. \\
 Code is available at \url{https://github.com/rmuraglia/Schmidler}.
-% \begin{verbatim} https://github.com/rmuraglia/Schmidler \end{verbatim}.
 
 \section{Exhaustive search} % (fold)
 \label{sec:exhaustive_search}
@@ -14,13 +13,99 @@ Code is available at \url{https://github.com/rmuraglia/Schmidler}.
 \subsection{Dijkstra's algorithm} % (fold)
 \label{sub:dijkstra_s_algorithm}
 
-Dijkstra's algorithm is a dynamic programming algorithm for finding minimum cost paths through graphs
+Dijkstra's algorithm is a dynamic programming algorithm for finding minimum cost paths through graphs.
+
+\begin{algorithm}
+\caption{Dijkstra's algorithm}
+\begin{algorithmic}[1]
+    \STATE Initialize queue $Q$ containing all nodes of the graph.
+    \STATE Set node attributes as: $node.dist=\infty, node.prev=$NA, $\forall$ nodes.
+    \STATE For node corresponding to initial state, set $node.dist=0$.
+    \WHILE{$Q$ not empty}
+        \STATE Pop node with minimum $node.dist$ from $Q$. Set as $u$.
+        \STATE Set $V$ as the list of neighbor nodes to $u$.
+        \FOR {$v$ in $V$}
+            \STATE Calculate the distance to $v$ via $u$ as $v.alt = u.dist + d(u,v)$.
+            \IF {$v.alt < v.dist$}
+            \STATE This is a new shorter path to $v$.
+            \STATE Set $v.dist = v.alt$ and $v.prev = u$
+            \ENDIF
+        \ENDFOR
+    \ENDWHILE
+\end{algorithmic}
+\end{algorithm}
+
+Technically, because we are only interested in the shortest path between a given pair of nodes, we can terminate the algorithm when the selected $u$ in line 5 is the target node.
+To reconstruct a solution path, we can simply trace our way backwards. 
+Starting with the target node, we simply need to note the $node.prev$ value, and keep on iterating backwards until we reach the initial node, with a $node.prev$ value of NA.
+
+For figure \ref{uniuni}, the initial and target distributions were $\mathcal{N}(0,1)$ and $\mathcal{N}(5,1)$ distributions, respectively.
+More specifically, they were defined with the potential function $U(x) = \frac{(x-\mu)^2}{2\sigma^2}$, and the unnormalized density $q(x) = \exp(-\beta U(x))$.
+The initial and target state had $(\mu, \sigma)$ pairs $(0,1), (5,1)$, respectively.
+Intermediate distributions were defined by $lambda$-scaling, as shown in equation \eqref{lambdascaling}.
+
+For figure \ref{unibi}, the initial distribution was the same standard normal, but the target distribution was a bimodal distribution, defined by a quartic potential $U(x) = (ax^4 - bx^2)/(\sigma^2c)$. Here, $a=1, b=81, c=150, \sigma=1$.
+
+For both cases, the distance metric was the total variation distance, as defined by Roberts and Rosenthal\cite{roberts2004general}: $d_{TV}(p_1, p_2)=E_1 \left [\min \left (1,\frac{p_2(x)}{p_1(x)} \right ) \right ]$. 
+The search parameters used were 1000 draws per node, and a $move.jump$ coefficient of 4.
+
+For figure \ref{varbar-paramviews}, the distributions were defined as they were for figures \ref{uniuni} and \ref{unibi}. Here temperature varied in the grid instead of $\sigma$. $\sigma$ was held constant at 1, but $\beta$, the inverse temperature varied according to the grid coordinates.
+The distance metric was the asymptotic variance of the BAR estimator, as defined in equation \eqref{eq:varbar}.
+In both cases, there were 1000 draws per node and a $move.jump$ coefficient of 5.
 
 % subsection dijkstra_s_algorithm (end)
 
 \subsection{Fixed path length search} % (fold)
 \label{sub:fixed_path_length_search}
 
-% subsection fixed_path_length_search (end)
+In equation \eqref{eq:varbar}, there is a leading $1/N$ variance reduction term based on the number of samples drawn at each node. 
+As a result, when 1000 draws are sampled from each state, paths with more edges benefit from this leading term more.
+In other words, depending on path length, some paths can be thought of as more computationally costly.
+In figure \ref{fig:kshortest} we compare equal computation paths by fixing the total number of samples drawn per path.
+To do this, we carry out a dynamic programming search, similar to Dijkstra's algorithm, which returns the shortest path of specified length. 
 
+\begin{algorithm}
+\caption{Fixed path length search}
+\begin{algorithmic}[1]
+    \STATE Initialize $C$ matrix values to $\infty$, where $C[i,j]$ represents the cost of the cheapest path from the initial state to state $i$ in $j$ steps.
+    \STATE Initialize $C[init,1]=0$.
+    \STATE Initialize $P$ matrix values to NA, where $P[i,j]$ represents the previous state corresponding to the move that gave rise to $C[i,j]$.
+    \FOR {$k$ in $2:maxlength$}
+        \STATE Set $Q^\prime$ as the states with a complete path in $k-1$ steps ($C[,k-1]\neq \infty$)
+        \STATE Set $Q$ as the neighbors of $Q^\prime$. These are the nodes to be queried.
+        \FOR {$q$ in $Q$}
+            \STATE set $V$ as the list of neighbor nodes to $q$.
+            \FOR {$v$ in $V$}
+                \STATE Calculate the distance to $q$ via $v$ in $k$ steps as $q.alt = C[v,k-1] + d(v,q)$.
+                \IF {$q.alt < C[q,k]$}
+                    \STATE This is a new shorter path to $q$.
+                    \STATE Set $C[q,k] = q.alt$ and $P[q,k] = v$.
+                \ENDIF
+            \ENDFOR
+        \ENDFOR
+    \ENDFOR
+\end{algorithmic}
+\end{algorithm}
+
+At the completion of the algorithm, we can then directly read off the unscaled path costs, constrained to a path length, which can then be corrected to account for the number of edges in the path.
+Obtaining the solution path is done in the same way as for Dijkstra's algorithm. 
+We simply need to trace back values in the $P$ matrix.
+
+For the harmonic wells, the end point distributions were the same as previously. Each state was sampled from 5000 times to obtain the unscaled edge cost, which was then scaled with an effective sample size. The $move.jump$ coefficient was 4.
+
+For the unimodal to bimodal case, each state was sampled from 1000 times, and the $move.jump$ coefficient was 10. The initial normal distribution state was the same as before, but the bimodal distribution now has coefficients: $a=0.5, b=14, c=64$.
+% subsection fixed_path_length_search (end)
 % section exhaustive_search (end)
+
+\section{Sequential Monte Carlo} % (fold)
+\label{sec:sequential_monte_carlo}
+
+% AIS, seqBAR norm bimod (phrma?)
+
+% AIS uni uni path height compare
+
+% pcrooks tdistn, crooks
+
+
+
+% section sequential_monte_carlo (end)

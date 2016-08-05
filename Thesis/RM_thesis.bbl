@@ -245,4 +245,9 @@ Sarah~E Boyce, David~L Mobley, Gabriel~J Rocklin, Alan~P Graves, Ken~A Dill,
   methods in a polar model binding site.
 \newblock {\em Journal of molecular biology}, 394(4):747--763, 2009.
 
+\bibitem{roberts2004general}
+Gareth~O Roberts and Jeffrey~S Rosenthal.
+\newblock General state space {M}arkov chains and {MCMC} algorithms.
+\newblock {\em Probability Surveys}, 1:20--71, 2004.
+
 \end{thebibliography}

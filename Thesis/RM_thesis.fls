@@ -86,6 +86,12 @@ INPUT /usr/local/texlive/2015/texmf-dist/tex/latex/beamer/translator/translator.
 INPUT /usr/local/texlive/2015/texmf-dist/tex/latex/beamer/translator/translator.sty
 INPUT /usr/local/texlive/2015/texmf-dist/tex/latex/beamer/translator/translator-language-mappings.tex
 INPUT /usr/local/texlive/2015/texmf-dist/tex/latex/beamer/translator/translator-language-mappings.tex
+INPUT /usr/local/texlive/2015/texmf-dist/tex/latex/algorithms/algorithm.sty
+INPUT /usr/local/texlive/2015/texmf-dist/tex/latex/algorithms/algorithm.sty
+INPUT /usr/local/texlive/2015/texmf-dist/tex/latex/float/float.sty
+INPUT /usr/local/texlive/2015/texmf-dist/tex/latex/float/float.sty
+INPUT /usr/local/texlive/2015/texmf-dist/tex/latex/algorithms/algorithmic.sty
+INPUT /usr/local/texlive/2015/texmf-dist/tex/latex/algorithms/algorithmic.sty
 INPUT /usr/local/texlive/2015/texmf-dist/tex/latex/hyperref/hyperref.sty
 INPUT /usr/local/texlive/2015/texmf-dist/tex/latex/hyperref/hyperref.sty
 INPUT /usr/local/texlive/2015/texmf-dist/tex/generic/oberdiek/hobsub-hyperref.sty
