@@ -26,4 +26,9 @@
 \contentsline {section}{\numberline {A.1}Exhaustive search}{32}{section.A.1}
 \contentsline {subsection}{\numberline {A.1.1}Dijkstra's algorithm}{32}{subsection.A.1.1}
 \contentsline {subsection}{\numberline {A.1.2}Fixed path length search}{33}{subsection.A.1.2}
-\contentsline {chapter}{Bibliography}{35}{ALC@unique.31}
+\contentsline {section}{\numberline {A.2}Sequential Monte Carlo}{35}{section.A.2}
+\contentsline {subsection}{\numberline {A.2.1}Specific parameter values}{36}{subsection.A.2.1}
+\contentsline {section}{\numberline {A.3}Reinforcement learning}{37}{section.A.3}
+\contentsline {subsection}{\numberline {A.3.1}AIS bandit}{37}{subsection.A.3.1}
+\contentsline {subsection}{\numberline {A.3.2}Q-learning}{38}{subsection.A.3.2}
+\contentsline {chapter}{Bibliography}{40}{subsection.A.3.2}

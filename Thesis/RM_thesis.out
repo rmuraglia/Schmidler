@@ -26,4 +26,9 @@
 \BOOKMARK [1][-]{section.A.1}{A.1 Exhaustive search}{appendix.A}% 26
 \BOOKMARK [2][-]{subsection.A.1.1}{A.1.1 Dijkstra's algorithm}{section.A.1}% 27
 \BOOKMARK [2][-]{subsection.A.1.2}{A.1.2 Fixed path length search}{section.A.1}% 28
-\BOOKMARK [0][-]{ALC@unique.31}{Bibliography}{}% 29
+\BOOKMARK [1][-]{section.A.2}{A.2 Sequential Monte Carlo}{appendix.A}% 29
+\BOOKMARK [2][-]{subsection.A.2.1}{A.2.1 Specific parameter values}{section.A.2}% 30
+\BOOKMARK [1][-]{section.A.3}{A.3 Reinforcement learning}{appendix.A}% 31
+\BOOKMARK [2][-]{subsection.A.3.1}{A.3.1 AIS bandit}{section.A.3}% 32
+\BOOKMARK [2][-]{subsection.A.3.2}{A.3.2 Q-learning}{section.A.3}% 33
+\BOOKMARK [0][-]{subsection.A.3.2}{Bibliography}{}% 34
