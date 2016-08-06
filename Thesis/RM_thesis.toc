@@ -31,4 +31,4 @@
 \contentsline {section}{\numberline {A.3}Reinforcement learning}{37}{section.A.3}
 \contentsline {subsection}{\numberline {A.3.1}AIS bandit}{37}{subsection.A.3.1}
 \contentsline {subsection}{\numberline {A.3.2}Q-learning}{38}{subsection.A.3.2}
-\contentsline {chapter}{Bibliography}{40}{subsection.A.3.2}
+\contentsline {chapter}{Bibliography}{40}{ALC@unique.73}
